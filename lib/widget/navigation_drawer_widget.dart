@@ -1,5 +1,8 @@
 import 'package:bms/Utils/colors.dart';
-import 'package:bms/page/home.dart';
+// import 'package:bms/page/home.dart';
+import 'package:bms/page/network.dart';
+import 'package:bms/page/reminder.dart';
+// import 'package:bms/page/topup.dart';
 // import 'package:bms/page/bank.dart';
 // import 'package:bms/page/cm_invoice.dart';
 // import 'package:bms/page/customer.dart';
@@ -33,21 +36,53 @@ class MultilevelDrawerWidget extends StatefulWidget {
 }
 
 class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
-  List data = [];
+  final List<Map> _menu = [
+    {
+      'id': 'dashboard',
+      'route':'dash',
+    },
+    {
+      'id': 'top-up',
+      'route':'topup',
+    },
+    {
+      'id': 'dashboard',
+      'route':'dash',
+    },
+    {
+      'id': 'top-up',
+      'route':'topup',
+    },
+    {
+      'id': 'dashboard',
+      'route':'dash',
+    },
+    {
+      'id': 'top-up',
+      'route':'topup',
+    },
+    {
+      'id': 'dashboard',
+      'route':'dash',
+    },
+    {
+      'id': 'top-up',
+      'route':'topup',
+    },
+  ];
+
   bool isLoading = false;
   // final padding = EdgeInsets.symmetric(horizontal: 10);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        decoration:
-        const BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
+        // decoration:
+        // const BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
         width: 200,
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
+        child: Column(
+            children:  [
+              DrawerHeader(
                 decoration:
                 BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
                 child: Center(
@@ -61,7 +96,33 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                   ),
                 ),
               ),
-              getBody()
+              Expanded(
+                child: test(),
+              )
+              // Expanded(
+              //     // child: ListView.builder(
+              //     //     itemCount: 10,
+              //     //     itemBuilder: (_, index){
+              //     //       return ListTile(
+              //     //         title: Text("Data $index"),
+              //     //         onTap: (){
+              //     //           if (index == 1){
+              //     //             Navigator.push(context, MaterialPageRoute(builder: (context) => topup()));
+              //     //           }
+              //     //         },
+              //     //       );
+              //     //     })
+              // ),
+              // ListTile(
+              //   title: Text("data"),
+              // ),
+              // ListView.builder(
+              //     itemCount: 10,
+              //     itemBuilder: (_, index){
+              //       return ListTile(
+              //         title: Text("Data $index"),
+              //       );
+              //     }),
               // ListView.builder(
               //   itemBuilder: (BuildContext context, int index) {
               //     return ListTile(
@@ -439,40 +500,72 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
               // ),
             ],
           ),
-        ),
       )
     );
   }
 
-  Widget getBody() {
-    if(data.contains(null) || data.length < 0 || isLoading){
-      return Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),));
-    }
-    return ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return localdrawe(data[index]);
-        });
+  Widget test(){
+    return ListView.builder(itemBuilder: (context,index){
+      return ListTile(
+        tileColor: Colors.white,
+        title: Text(_menu[index]['id']),
+        onTap: (){
+          if(index == 0){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
+          }if(index == 1){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => reminder()));
+          }
+        },
+      );
+    });
   }
 
-  Widget localdrawe (index){
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(
-            title: const Text(
-              "Dashboard",
-              style: TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-            leading: const Icon(Icons.home),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const home()));
-            });
-      },
-    );
+
+  List<ListTile> Menudata(){
+    return _menu.map((menudata) => ListTile(
+      title: Text(menudata['id']),
+    )).toList();
   }
+
+  ListView getBody(BuildContext context){
+    return ListView.builder(
+      itemCount: 10,
+        itemBuilder: (_, index){
+          return ListTile(
+            title: Text("Data $index"),
+      );
+    });
+  }
+
+  // Widget getBody() {
+  //   if(data.contains(null) || data.length < 0 || isLoading){
+  //     return Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),));
+  //   }
+  //   return ListView.builder(
+  //       itemCount: data.length,
+  //       itemBuilder: (context, index) {
+  //         return localdrawe(data[index]);
+  //       });
+  // }
+
+  // Widget localdrawe (index){
+  //   return ListView.builder(
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return ListTile(
+  //           title: const Text(
+  //             "Dashboard",
+  //             style: TextStyle(
+  //                 color: Colors.black, fontWeight: FontWeight.bold),
+  //           ),
+  //           leading: const Icon(Icons.home),
+  //           onTap: () {
+  //             Navigator.pop(context);
+  //             Navigator.push(context,
+  //                 MaterialPageRoute(builder: (context) => const home()));
+  //           });
+  //     },
+  //   );
+  // }
 }
 
 Widget buildSearchField() {
