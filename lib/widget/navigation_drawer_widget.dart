@@ -75,7 +75,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                 child: ListView(
                   children: _menu.map((menu) {
                     return ListTile(
-                      title: Text(menu,style:const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                      title: Text(menu,style:const TextStyle(fontWeight: FontWeight.bold),),
                       onTap: (){
                         if(menu == 'Network'){
                           Navigator.pop(context);
