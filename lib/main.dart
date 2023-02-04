@@ -27,6 +27,9 @@ class LoginPage2 extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage2> {
+  var userController = TextEditingController();
+  var passwordController = TextEditingController();
+
   bool _isHidden = true;
   String roleValue = 'Admin';
   var items = ['Admin','Operator','emp'];
@@ -55,9 +58,9 @@ class _LoginPageState extends State<LoginPage2> {
                 ),
               ], color: Colors.black,fontSize: 45,fontWeight: FontWeight.bold,fontFamily: "Ubuntu" ),),
               const SizedBox(height: 50,),
-              buildTextField('User Name'),
-              const SizedBox(height: 25,),
-              buildTextField('Password'),
+              buildTextField('User Name','Password'),
+              // const SizedBox(height: 25,),
+              // buildTextField('Password'),
               // const SizedBox(height: 20,),
               // buildRole(),
               const SizedBox(height: 20,),
@@ -122,33 +125,59 @@ class _LoginPageState extends State<LoginPage2> {
     );
   }
 
-  Widget buildTextField(String hintText) {
+  Future<void> login() async {
+    if(userController.text.isNotEmpty && passwordController.text.isNotEmpty){
+      // var response = awai http.post(Uri.parse(apiurl),
+      //   body: ({
+      //
+      //   })
+      //     if(response.statusCode == 200){
+      //
+      // }
+      // );
+    }
+}
+
+  Widget buildTextField(String hintText1, hintText2) {
     return Padding(
       padding: const EdgeInsets.only(left: 25,right: 25),
-      child: TextField(
-        cursorColor: Colors.white,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(
-            color: Colors.black,
-            fontSize: 16.0,
+      child: Column(
+        children: [
+          TextField(
+            controller: userController,
+            decoration: InputDecoration(
+              hintText: hintText1,
+              hintStyle: const TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+              prefixIcon: hintText1 == "User Name"
+                  ? const Icon(Icons.verified_user)
+                  :null
+                  // : const Icon(Icons.lock),
+            ),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20.0),
+          const SizedBox(height: 20,),
+          TextField(
+            controller: passwordController,
+            decoration: InputDecoration(
+              hintText: hintText2,
+              hintStyle: const TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+              suffixIcon: hintText2 == 'Password'
+                ? IconButton(onPressed: _toggleVisibility, icon: _isHidden
+                  ? const Icon(Icons.visibility_off)
+                : const Icon(Icons.visibility)
+              )
+              : null
+            ),
+            obscureText: hintText2 == "Password" ? _isHidden : false,
           ),
-          prefixIcon: hintText == "User Name"
-              ? const Icon(Icons.verified_user)
-              : const Icon(Icons.lock),
-          suffixIcon: hintText == "Password"
-              ? IconButton(
-                  onPressed: _toggleVisibility,
-                  icon: _isHidden
-                      ? const Icon(Icons.visibility_off)
-                      : const Icon(Icons.visibility),
-                )
-              : null,
-        ),
-        obscureText: hintText == "Password" ? _isHidden : false,
+        ],
       ),
     );
   }
@@ -211,6 +240,8 @@ class _LoginPageState extends State<LoginPage2> {
         onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => password()));
+          print(userController.text);
+          print(passwordController.text);
         },
         child: const Text(
           "Update Password",
