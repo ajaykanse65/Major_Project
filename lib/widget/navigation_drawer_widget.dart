@@ -1,7 +1,10 @@
 import 'package:bms/Utils/colors.dart';
+// import 'package:bms/page/employee.dart';
+import 'package:bms/page/home.dart';
 // import 'package:bms/page/home.dart';
 import 'package:bms/page/network.dart';
-import 'package:bms/page/reminder.dart';
+// import 'package:bms/page/reminder.dart';
+// import 'package:bms/page/renewal.dart';
 // import 'package:bms/page/topup.dart';
 // import 'package:bms/page/bank.dart';
 // import 'package:bms/page/cm_invoice.dart';
@@ -28,6 +31,8 @@ import 'package:bms/page/reminder.dart';
 // import 'package:bms/page/vendor.dart';
 import 'package:flutter/material.dart';
 
+import '../page/topup.dart';
+
 class MultilevelDrawerWidget extends StatefulWidget {
   const MultilevelDrawerWidget({Key? key}) : super(key: key);
 
@@ -36,40 +41,9 @@ class MultilevelDrawerWidget extends StatefulWidget {
 }
 
 class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
-  final List<Map> _menu = [
-    {
-      'id': 'dashboard',
-      'route':'dash',
-    },
-    {
-      'id': 'top-up',
-      'route':'topup',
-    },
-    {
-      'id': 'dashboard',
-      'route':'dash',
-    },
-    {
-      'id': 'top-up',
-      'route':'topup',
-    },
-    {
-      'id': 'dashboard',
-      'route':'dash',
-    },
-    {
-      'id': 'top-up',
-      'route':'topup',
-    },
-    {
-      'id': 'dashboard',
-      'route':'dash',
-    },
-    {
-      'id': 'top-up',
-      'route':'topup',
-    },
-  ];
+  List<String> _menu = ["DashBoard","Top-Up","Network"];
+
+
 
   bool isLoading = false;
   // final padding = EdgeInsets.symmetric(horizontal: 10);
@@ -77,6 +51,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
+        color: Colors.white,
         // decoration:
         // const BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
         width: 200,
@@ -97,8 +72,26 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                 ),
               ),
               Expanded(
-                child: test(),
-              )
+                child: ListView(
+                  children: _menu.map((menu) {
+                    return ListTile(
+                      title: Text(menu,style:const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+                      onTap: (){
+                        if(menu == 'Network'){
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
+                        }else if(menu == "Top-Up"){
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => topup()));
+                        }else if(menu == "DashBoard"){
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
+                        }
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
               // Expanded(
               //     // child: ListView.builder(
               //     //     itemCount: 10,
@@ -504,38 +497,38 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
     );
   }
 
-  Widget test(){
-    return ListView.builder(itemBuilder: (context,index){
-      return ListTile(
-        tileColor: Colors.white,
-        title: Text(_menu[index]['id']),
-        onTap: (){
-          if(index == 0){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
-          }if(index == 1){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => reminder()));
-          }
-        },
-      );
-    });
-  }
+  // Widget test(){
+  //   return ListView.builder(itemBuilder: (context,index){
+  //     return ListTile(
+  //       tileColor: Colors.black,
+  //       title: Text(_menu[index]),
+  //       onTap: (){
+  //         if(_menu == 'DashBoard'){
+  //           Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
+  //         }if(_menu == 'Top-UP'){
+  //           Navigator.push(context, MaterialPageRoute(builder: (context) => reminder()));
+  //         }
+  //       },
+  //     );
+  //   });
+  // }
+  //
+  //
+  // List<dynamic> Menudata(){
+  //   return _menu.map((menudata) => ListTile(
+  //     title: Text(menudata),
+  //   )).toList();
+  // }
 
-
-  List<ListTile> Menudata(){
-    return _menu.map((menudata) => ListTile(
-      title: Text(menudata['id']),
-    )).toList();
-  }
-
-  ListView getBody(BuildContext context){
-    return ListView.builder(
-      itemCount: 10,
-        itemBuilder: (_, index){
-          return ListTile(
-            title: Text("Data $index"),
-      );
-    });
-  }
+  // ListView getBody(BuildContext context){
+  //   return ListView.builder(
+  //     itemCount: 10,
+  //       itemBuilder: (_, index){
+  //         return ListTile(
+  //           title: Text("Data $index"),
+  //     );
+  //   });
+  // }
 
   // Widget getBody() {
   //   if(data.contains(null) || data.length < 0 || isLoading){
