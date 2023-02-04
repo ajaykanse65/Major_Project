@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:bms/page/home.dart';
 import 'package:bms/page/password.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(const App());
 
@@ -31,7 +35,6 @@ class _LoginPageState extends State<LoginPage2> {
   var passwordController = TextEditingController();
 
   bool _isHidden = true;
-  String roleValue = 'Admin';
   var items = ['Admin','Operator','emp'];
 
   void _toggleVisibility() {
@@ -59,91 +62,92 @@ class _LoginPageState extends State<LoginPage2> {
               ], color: Colors.black,fontSize: 45,fontWeight: FontWeight.bold,fontFamily: "Ubuntu" ),),
               const SizedBox(height: 50,),
               buildTextField('User Name','Password'),
-              // const SizedBox(height: 25,),
-              // buildTextField('Password'),
-              // const SizedBox(height: 20,),
-              // buildRole(),
               const SizedBox(height: 20,),
               buildButtonContainer(),
               const SizedBox(height: 20,),
               buildButton(),
             ],
           ),
-          // child: Container(
-          //   decoration: const BoxDecoration(
-          //       gradient: LinearGradient(colors: cardcolor)),
-          //   // padding:
-          //   //     EdgeInsets.only(top: 100.0, right: 20.0, left: 20.0, bottom: 20.0),
-          //   child: Center(
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: <Widget>[
-          //         SizedBox(
-          //           height: 75,
-          //         ),
-          //         Text(
-          //           'BMS Network Portal',
-          //           textAlign: TextAlign.center,
-          //           style: TextStyle(
-          //               fontSize: 40.0,
-          //               fontWeight: FontWeight.bold,
-          //               color: Colors.white),
-          //         ),
-          //         SizedBox(
-          //           height: 40.0,
-          //         ),
-          //         Text(
-          //           "Login Form",
-          //           style: TextStyle(
-          //               fontSize: 32.0,
-          //               fontWeight: FontWeight.bold,
-          //               color: Theme.of(context).primaryColor),
-          //         ),
-          //         SizedBox(
-          //           height: 50.0,
-          //         ),
-          //         buildTextField("User Name"),
-          //         SizedBox(
-          //           height: 28.0,
-          //         ),
-          //         buildTextField("Password"),
-          //         SizedBox(height: 50.0),
-          //         buildButtonContainer(),
-          //         SizedBox(
-          //           height: 10.0,
-          //         ),
-          //         buildButton(),
-          //         SizedBox(
-          //           height: 10.0,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
       ),
     );
   }
 
   Future<void> login() async {
-    if(userController.text.isNotEmpty && passwordController.text.isNotEmpty){
-      // var response = awai http.post(Uri.parse(apiurl),
-      //   body: ({
-      //
-      //   })
-      //     if(response.statusCode == 200){
-      //
-      // }
-      // );
+    const String apiUrl = 'https://androidtest.joogadnet.com/androidAppApi/getData.php';
+    if (userController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty) {
+      var response = await http.post(Uri.parse(apiUrl),
+          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text,
+          }));
+      if (response.statusCode == 200) {
+        print(response.body);
+        var resData = json.decode(response.body);
+        String Status = resData['Status'];
+        if(Status != 'Success'){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              padding: const EdgeInsets.all(5),
+              content: Text(
+                Status,
+                style: const TextStyle(
+                     fontSize: 15, letterSpacing: 0.5),
+                textAlign: TextAlign.center,
+              ),
+              elevation: 6.0,
+              backgroundColor: Colors.grey,
+              behavior: SnackBarBehavior.floating,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+            ),
+          );
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              padding: EdgeInsets.all(5),
+              content: Text(
+                'Login Successfully',
+                style: TextStyle(
+                     fontSize: 15, letterSpacing: 0.5),
+                textAlign: TextAlign.center,
+              ),
+              elevation: 6.0,
+              backgroundColor: Colors.deepOrangeAccent,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+            ),
+          );
+          // SharedPreferences preferences = await SharedPreferences.getInstance();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const home()));
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          padding: EdgeInsets.all(5),
+          content: Text(
+            'All Field are Required',
+            style: TextStyle(
+                color: Colors.black, fontSize: 15, letterSpacing: 0.5),
+            textAlign: TextAlign.center,
+          ),
+          elevation: 6.0,
+          backgroundColor: Colors.grey,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+        ),
+      );
     }
-}
+  }
 
   Widget buildTextField(String hintText1, hintText2) {
     return Padding(
       padding: const EdgeInsets.only(left: 25,right: 25),
       child: Column(
         children: [
-          TextField(
+          TextFormField(
             controller: userController,
             decoration: InputDecoration(
               hintText: hintText1,
@@ -158,8 +162,8 @@ class _LoginPageState extends State<LoginPage2> {
                   // : const Icon(Icons.lock),
             ),
           ),
-          const SizedBox(height: 20,),
-          TextField(
+          const SizedBox(height: 25,),
+          TextFormField(
             controller: passwordController,
             decoration: InputDecoration(
               hintText: hintText2,
@@ -168,6 +172,7 @@ class _LoginPageState extends State<LoginPage2> {
                 fontSize: 16.0,
               ),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+              prefixIcon: Icon(Icons.lock),
               suffixIcon: hintText2 == 'Password'
                 ? IconButton(onPressed: _toggleVisibility, icon: _isHidden
                   ? const Icon(Icons.visibility_off)
@@ -181,38 +186,6 @@ class _LoginPageState extends State<LoginPage2> {
       ),
     );
   }
-  Widget buildRole(){
-    return Padding(
-      padding: const EdgeInsets.only(left: 30,right: 30),
-      child: Container(
-        height: 35,
-        width: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: FittedBox(
-          child: DropdownButton(
-            value: roleValue,
-            icon: const Icon(Icons.keyboard_arrow_down),
-            items: items.map((String items) {
-              return DropdownMenuItem(
-                value: items,
-                child: Text(items,style: const TextStyle(
-                    color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                roleValue = newValue!;
-              });
-            },
-          ),
-        )
-      ),
-    );
-  }
 
   Widget buildButtonContainer() {
     return CustomButtonWidget(
@@ -222,12 +195,7 @@ class _LoginPageState extends State<LoginPage2> {
               color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const home(),
-            ),
-          );
+          login();
         },
         dimensionheight: 35,
         dimensionwidth: 100);
