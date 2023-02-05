@@ -17,8 +17,7 @@ class _RenewalDropDownWidgetState extends State<RenewalDropDownWidget> {
       width: 250,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: Colors.grey.shade400),
-      child:FittedBox(
-          child: DropdownButton(
+      child:DropdownButton(
               value: dropdownvalue,
               icon: const Icon(Icons.keyboard_arrow_down),
               items: items.map((String items) {
@@ -33,7 +32,7 @@ class _RenewalDropDownWidgetState extends State<RenewalDropDownWidget> {
                 });
               },
             ),
-        ),
+
     );
   }
 }

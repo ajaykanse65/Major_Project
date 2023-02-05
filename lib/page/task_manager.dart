@@ -12,7 +12,7 @@ class TaskManager extends StatelessWidget {
     return Scaffold(
 
       extendBody: true,
-      floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("Add New Task",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
+      floatingActionButton: FloatingActionButton.extended(backgroundColor: Colors.deepOrangeAccent.shade200,onPressed: (){},label: Text("Add New Task",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
       appBar: SearchBar(),
       drawer: MultilevelDrawerWidget(),
       body: SingleChildScrollView(
@@ -22,22 +22,22 @@ class TaskManager extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               HeadlineWidget(bal: '5000'),
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               FittedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
+                  children: const [
                     Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text("Total Task: ",style: TextStyle(color: Colors.black,fontSize: 17,fontWeight: FontWeight.w500),),
+                      padding: EdgeInsets.only(left: 8),
+                      child: Text("Total Task: ",style: TextStyle(fontSize: 17,fontWeight: FontWeight.w500),),
                     ),
                     SizedBox(width: 2,),
-                    Text('1',style:TextStyle(color: Colors.black,fontSize: 17,fontWeight: FontWeight.w500)),
+                    Text('1',style:TextStyle(fontSize: 17,fontWeight: FontWeight.w500)),
                     SizedBox(width: 1,),
-                    Icon(Icons.refresh,size: 17,color: Colors.black,),
-
+                    Icon(Icons.refresh,size: 17),
+                    SizedBox(width: 20,),
                     DatePickerWidget()
                   ],
                 ),

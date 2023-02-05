@@ -13,11 +13,11 @@ class TotalCountWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(title,style: TextStyle(color: Colors.grey.shade800,fontSize: 17,fontWeight: FontWeight.bold),),
+          Text(title,style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
           SizedBox(
             width: 8,
           ),
-          Text(count,style: TextStyle(color: Colors.black,fontSize: 17,fontWeight: FontWeight.bold),)
+          Text(count,style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),)
         ],
       ),
     );

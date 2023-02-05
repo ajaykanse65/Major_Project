@@ -51,7 +51,8 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
+        // color: Colors.white,
         // decoration:
         // const BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
         width: 200,

@@ -66,7 +66,7 @@ class _renewalState extends State<renewal> {
                 maintainAnimation: true,
                 maintainState: true,
                 maintainSize: true,
-                child: TableWidgetPage(),)
+                child: TableWidgetPage(),),
             ],
           ),
         ),

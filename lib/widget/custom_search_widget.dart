@@ -42,7 +42,6 @@ class _SearchBarState extends State<SearchBar> {
             });
           },
           icon: customIcon,
-          color: Colors.black,
         ),
         IconButton(
           onPressed: () {
@@ -54,7 +53,7 @@ class _SearchBarState extends State<SearchBar> {
             );
           },
           icon: Icon(Icons.notifications),
-          color: Colors.black,
+
         ),
         IconButton(
           onPressed: () {
@@ -65,7 +64,6 @@ class _SearchBarState extends State<SearchBar> {
               ),
             );
           },
-          color: Colors.black,
           icon: Icon(Icons.logout),
         ),
       ],

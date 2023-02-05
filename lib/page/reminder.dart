@@ -9,17 +9,15 @@ class reminder extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Colors.deepOrangeAccent.shade200,
           onPressed: () {},
-          label: Text(
+          label: const Text(
             "New Reminder",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w500, fontSize: 17),
-          ),
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17),),
           elevation: 15,
         ),
         appBar: AppBar(
-          title: Text('Reminder'),
+          title: const Text('Reminder'),
           centerTitle: true,
           actions: [
             IconButton(
@@ -27,7 +25,7 @@ class reminder extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LoginPage2()));
               },
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               color: Colors.black,
             )
           ],
@@ -48,10 +46,9 @@ class reminder extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 9),
-                  child: Text(
+                  child:  Text(
                     'Status',
                     style: TextStyle(
-                        color: Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.w500),
                   ),

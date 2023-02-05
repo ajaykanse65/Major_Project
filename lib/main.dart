@@ -16,8 +16,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primaryColor: Colors.deepOrangeAccent.shade200, fontFamily: "Ubuntu"),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      // theme: ThemeData(
+      //     primaryColor: Colors.deepOrangeAccent.shade200, fontFamily: "Ubuntu"),
       home: const LoginPage2(),
     );
   }
@@ -46,7 +48,8 @@ class _LoginPageState extends State<LoginPage2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.deepOrangeAccent.shade200,
+      // backgroundColor: Colors.deepOrangeAccent.shade200,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -195,7 +198,8 @@ class _LoginPageState extends State<LoginPage2> {
               color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () {
-          login();
+          // login();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
         },
         dimensionheight: 35,
         dimensionwidth: 100);
@@ -208,8 +212,6 @@ class _LoginPageState extends State<LoginPage2> {
         onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => password()));
-          print(userController.text);
-          print(passwordController.text);
         },
         child: const Text(
           "Update Password",
