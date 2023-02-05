@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ProductTable extends StatelessWidget {
    String productname, pname, gst, hsn, purchase, sale, opening;
 
