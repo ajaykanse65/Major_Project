@@ -19,7 +19,6 @@ class CredentialsCardWidget extends StatelessWidget {
       color: Colors.deepOrangeAccent.shade100,
       child: Container(
         margin: EdgeInsets.all(15),
-        height: 350,
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.all(12.0),

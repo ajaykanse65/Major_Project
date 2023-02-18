@@ -6,8 +6,14 @@ import '../widget/custom_search_widget.dart';
 
 void main() => runApp(topup());
 
-class topup extends StatelessWidget {
+class topup extends StatefulWidget {
+  @override
+  State<topup> createState() => _topupState();
+}
+
+class _topupState extends State<topup> {
   bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,27 +94,18 @@ class topup extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20.0,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:<Widget> [
-                            Checkbox(
-                              value: isChecked,
-                              onChanged: (bool? newValue){
-                                isChecked = newValue!;
-                              },
-                              checkColor: Colors.black,
-                              activeColor: Colors.deepOrange,
-                            ),
-                            Container(
-                              child: Text("Agree Pay", style: TextStyle(
-                                  fontWeight: FontWeight.bold
-                              ),),
-                            )
-                          ],
+                        CheckboxListTile(
+                          title: const Text("Agree Pay", style: TextStyle(fontWeight: FontWeight.bold),),
+                          value: isChecked,
+                          onChanged: (newValue) {
+                            setState(() {
+                              isChecked = newValue!;
+                            });
+                          },
+                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                         ),
                         const SizedBox(height: 20.0,),
                         ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(primary: Colors.deepOrangeAccent),child: const Text("Pay",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),),
-                        // buildTextFeild(),
                       ],
                     ),
                   ),
@@ -117,86 +114,6 @@ class topup extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  buildTextFeild(){
-    return Container(
-      padding: EdgeInsets.only(top: 30.0, right: 20.0, left: 20.0, bottom: 5.0),
-      child: Column(
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Enter Amount',
-              hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16.0
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              prefixIcon: const Icon(Icons.currency_rupee),
-            ),
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-          ),
-          const SizedBox(height: 20.0,),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Mobile Number',
-              hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16.0
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              prefixIcon: const Icon(Icons.call),
-            ),
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ],
-          ),
-          const SizedBox(height: 20.0,),
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Email Id',
-              hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16.0
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              prefixIcon: const Icon(Icons.email),
-            ),
-          ),
-          const SizedBox(height: 20.0,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:<Widget> [
-              Checkbox(
-                value: isChecked,
-                onChanged: (bool? newValue){
-                  isChecked = newValue!;
-                },
-                checkColor: Colors.black,
-                activeColor: Colors.deepOrange,
-              ),
-              Container(
-                child: Text("Agree Pay", style: TextStyle(
-                    fontWeight: FontWeight.bold
-                ),),
-              )
-            ],
-          ),
-          const SizedBox(height: 20.0,),
-          ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(primary: Colors.deepOrangeAccent),child: Text("Pay",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),),
-        ],
       ),
     );
   }

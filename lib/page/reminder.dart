@@ -5,7 +5,16 @@ import 'package:bms/widget/navigation_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 
-class reminder extends StatelessWidget {
+class reminder extends StatefulWidget {
+  @override
+  State<reminder> createState() => _reminderState();
+}
+
+class _reminderState extends State<reminder> {
+  String dropdownvalue = 'All';
+
+  var items = ['All', 'Completed', 'Pending'];
+
   @override
   Widget build(BuildContext context) => Scaffold(
         floatingActionButton: FloatingActionButton.extended(
@@ -65,6 +74,21 @@ class reminder extends StatelessWidget {
                   padding: const EdgeInsets.all(9.0),
                   child: buildSearchField(),
                 ),
+                // DropdownButton(
+                //   value: dropdownvalue,
+                //   icon: const Icon(Icons.keyboard_arrow_down),
+                //   items: items.map((String items) {
+                //     return DropdownMenuItem(
+                //       value: items,
+                //       child: Text(items),
+                //     );
+                //   }).toList(),
+                //   onChanged: (String? newValue) {
+                //     setState(() {
+                //       dropdownvalue = newValue!;
+                //     });
+                //   },
+                // ),
               ],
             ),
           ),

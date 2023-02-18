@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage2> {
   var userController = TextEditingController();
   var passwordController = TextEditingController();
   var mnoController = TextEditingController();
-  bool loading = false;
+  bool loading =  false;
 
   bool _isHidden = true;
   var items = ['Admin','Operator','emp'];
@@ -117,7 +117,6 @@ class _LoginPageState extends State<LoginPage2> {
                 textAlign: TextAlign.center,
               ),
               elevation: 6.0,
-              backgroundColor: Colors.deepOrangeAccent,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -139,7 +138,6 @@ class _LoginPageState extends State<LoginPage2> {
             textAlign: TextAlign.center,
           ),
           elevation: 6.0,
-          backgroundColor: Colors.grey,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -207,14 +205,14 @@ class _LoginPageState extends State<LoginPage2> {
     return CustomButtonWidget(
         title: const Text(
           "LOGIN",
-          style: TextStyle(
-              color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
         ),
         onPressed: () async {
           if (loading) return;
           setState(() => loading = true);
           await Future.delayed(const Duration(seconds: 2));
-          login();
+          // login();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
           setState(() => loading = false);
         },
         dimensionheight: 35,

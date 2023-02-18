@@ -64,6 +64,7 @@ class _NetworkState extends State<Network> {
   }
 
   DataTable networkTable() {
+    
     return DataTable(
       border: TableBorder.all(),
       columns: _networkColumn(),
