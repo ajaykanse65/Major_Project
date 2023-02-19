@@ -205,7 +205,7 @@ class _LoginPageState extends State<LoginPage2> {
     return CustomButtonWidget(
         title: const Text(
           "LOGIN",
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: () async {
           if (loading) return;

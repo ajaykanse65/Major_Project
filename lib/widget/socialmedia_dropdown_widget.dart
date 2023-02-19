@@ -8,8 +8,8 @@ class SocialDropDownWidget extends StatefulWidget {
 }
 
 class _SocialDropDownWidgetState extends State<SocialDropDownWidget> {
-  String dropdownvalue = 'Facebook';
   var items = ['Facebook', 'Twitter', 'Instagram', 'Google', 'LinkedIN'];
+  String dropdownvalue = 'Facebook';
   @override
   Widget build(BuildContext context) {
     return Container(

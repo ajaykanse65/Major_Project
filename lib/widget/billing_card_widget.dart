@@ -8,9 +8,9 @@ class BillingCardWidget extends StatefulWidget {
 }
 
 class _BillingCardWidgetState extends State<BillingCardWidget> {
-  TextEditingController billingnamecontroller = TextEditingController();
   TextEditingController pancontroller = TextEditingController();
   TextEditingController gstncontroller = TextEditingController();
+  TextEditingController billingnamecontroller = TextEditingController();
   @override
   void dsipose() {
     super.dispose();
