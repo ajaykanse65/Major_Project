@@ -6,7 +6,6 @@ import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import '../widget/documnets_dropdown_widget.dart';
 import '../widget/file_picker_widget.dart';
 
 
@@ -1234,7 +1233,7 @@ class _new_userState extends State<new_user> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),child: Text("Cancel",style: TextStyle(color: Colors.white,fontSize: 19,fontWeight: FontWeight.w800,),),),
-                  ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),child: Text("Reset",style: TextStyle(color: Colors.white,fontSize: 19,fontWeight: FontWeight.w800,),),),
+                  ElevatedButton(onPressed: (){clearText();},style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),child: Text("Reset",style: TextStyle(color: Colors.white,fontSize: 19,fontWeight: FontWeight.w800,),),),
                   ElevatedButton(onPressed: (){ add();},style: ElevatedButton.styleFrom(backgroundColor: Colors.greenAccent),child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 19,fontWeight: FontWeight.w800,),),)
                 ],
               )
@@ -1245,7 +1244,7 @@ class _new_userState extends State<new_user> {
     );
   }
 
-  add() async{
+  Future<void> add() async{
     var res = await http.post(Uri.parse("https://jsonplaceholder.typicode.com/posts"),
         body: {"utype" : dropdownvalue,"username" : useridcontroller.text, "password" : passwordcontroller.text,
           'fname' : fisrtnamecontroller.text, 'mname' : middlenamecontroller.text, 'lname' : lastnamecontroller.text, 'nation' : nationalitycontroller.text,
@@ -1254,7 +1253,39 @@ class _new_userState extends State<new_user> {
           'mobileno' : mobilecontroller.text, 'phone' : phoenocontroller.text, 'email' : emailcontroller.text, 'address' : addresscontroller.text,
           'pan' : pancontroller.text, 'gstn' : gstncontroller.text, 'billing' : billingnamecontroller.text, 'help': helpcontroller.text, 'other'  :othercontroller.text,
           'desc' : desccontroller.text, 'amt' : amtcontroller.text, 'totalamt' : totalamtcontroller.text,'documenttype' : document, 'profiletypr' : dropdownvaluem, 'profile' : profilecontroller.text,
+          'country' : countryValue, 'state' : stateValue, 'city' : cityValue,
         });
     print(res.body);
+  }
+
+  void clearText(){
+    useridcontroller.clear();
+    passwordcontroller.clear();
+    fisrtnamecontroller.clear();
+    middlenamecontroller.clear();
+    lastnamecontroller.clear();
+    nationalitycontroller.clear();
+    aadharaddcontroller.clear();
+    distrctcontroller.clear();
+    talukacontroller.clear();
+    pincontroller.clear();
+    areatcontroller.clear();
+    landmarkctcontroller.clear();
+    lanectcontroller.clear();
+    roomctcontroller.clear();
+    onuctcontroller.clear();
+    mobilecontroller.clear();
+    phoenocontroller.clear();
+    emailcontroller.clear();
+    addresscontroller.clear();
+    billingnamecontroller.clear();
+    pancontroller.clear();
+    gstncontroller.clear();
+    helpcontroller.clear();
+    othercontroller.clear();
+    desccontroller.clear();
+    amtcontroller.clear();
+    totalamtcontroller.clear();
+    profilecontroller.clear();
   }
 }
