@@ -1,5 +1,6 @@
 import 'package:bms/widget/dot_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widget/custom_flip_card.dart';
 import '../widget/custom_search_widget.dart';
 import '../widget/navigation_drawer_widget.dart';
@@ -13,6 +14,20 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  late SharedPreferences preferences;
+  String email ="";
+  @override
+  void initState(){
+    super.initState();
+    staylogin();
+  }
+  Future staylogin() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    var email = preferences.getString('username').toString();
+    setState(() {
+      email = email;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

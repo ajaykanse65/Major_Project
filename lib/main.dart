@@ -4,6 +4,7 @@ import 'package:bms/page/home.dart';
 import 'package:bms/page/password.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage2> {
           body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text, 'mobileNo' : mnoController.text
           }));
       if (response.statusCode == 200) {
-        print(response.body);
+        // print(response.body);
         var resData = json.decode(response.body);
         String Status = resData['Status'];
         if(Status != 'Success'){
@@ -122,7 +123,11 @@ class _LoginPageState extends State<LoginPage2> {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
             ),
           );
-          // SharedPreferences preferences = await SharedPreferences.getInstance();
+          final SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.setString('username', userController.text);
+          preferences.setString('password', passwordController.text);
+          preferences.setString('mno', mnoController.text);
+          print(preferences.getString('username'));
           // Add Preferences Here
           Navigator.push(context, MaterialPageRoute(builder: (context) => const home()));
         }
@@ -146,7 +151,7 @@ class _LoginPageState extends State<LoginPage2> {
     }
   }
 
-  Widget buildTextField(String hintText1, hintText2, hintText3) {
+  Widget buildTextField(String hintText1, hintText2, hintText3)  {
     return Padding(
       padding: const EdgeInsets.only(left: 25,right: 25),
       child: Column(
@@ -186,6 +191,10 @@ class _LoginPageState extends State<LoginPage2> {
           ),
           const SizedBox(height: 25,),
           TextFormField( // Comment this code after login
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly
+              ],
             controller: mnoController,
             decoration: InputDecoration(
                 hintText: hintText3,
@@ -211,8 +220,8 @@ class _LoginPageState extends State<LoginPage2> {
           if (loading) return;
           setState(() => loading = true);
           await Future.delayed(const Duration(seconds: 2));
-          // login();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
+          login();
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
           setState(() => loading = false);
         },
         dimensionheight: 35,
