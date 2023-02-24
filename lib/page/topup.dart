@@ -13,6 +13,9 @@ class topup extends StatefulWidget {
 
 class _topupState extends State<topup> {
   bool isChecked = false;
+  var amtController = TextEditingController();
+  var mnoController = TextEditingController();
+  var emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,8 @@ class _topupState extends State<topup> {
                             fontSize: 20
                         ),),
                         const SizedBox(height: 20.0,),
-                        TextField(
+                        TextFormField(
+                          controller: amtController,
                           decoration: InputDecoration(
                             hintText: 'Enter Amount',
                             hintStyle: const TextStyle(
@@ -62,7 +66,8 @@ class _topupState extends State<topup> {
                           ],
                         ),
                         const SizedBox(height: 20.0,),
-                        TextField(
+                        TextFormField(
+                          controller: mnoController,
                           decoration: InputDecoration(
                             hintText: 'Mobile Number',
                             hintStyle: const TextStyle(
@@ -80,7 +85,8 @@ class _topupState extends State<topup> {
                           ],
                         ),
                         const SizedBox(height: 20.0,),
-                        TextField(
+                        TextFormField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Email Id',
                             hintStyle: const TextStyle(
@@ -105,7 +111,7 @@ class _topupState extends State<topup> {
                           controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                         ),
                         const SizedBox(height: 20.0,),
-                        ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(primary: Colors.deepOrangeAccent),child: const Text("Pay",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),),
+                        ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrangeAccent),child: const Text("Pay",style: TextStyle(color: Colors.black,fontSize: 18,fontWeight: FontWeight.bold),),),
                       ],
                     ),
                   ),

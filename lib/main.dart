@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:bms/page/home.dart';
@@ -101,7 +103,6 @@ class _LoginPageState extends State<LoginPage2> {
                 textAlign: TextAlign.center,
               ),
               elevation: 6.0,
-              backgroundColor: Colors.grey,
               behavior: SnackBarBehavior.floating,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))),
