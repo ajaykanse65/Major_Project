@@ -1,4 +1,3 @@
-import 'package:bms/widget/location.dart';
 import 'package:flutter/material.dart';
 
 class TableWidgetPage extends StatefulWidget {
@@ -9,169 +8,172 @@ class TableWidgetPage extends StatefulWidget {
 }
 
 class _TableWidgetPageState extends State<TableWidgetPage> {
+  final List<Map> _sale = [
+    {
+      'id': '1',
+      'Customer Name': 'pk_vsk',
+      'Date': '04/06/2022',
+      'GST Amt.': '0.00',
+      'Invoice No': 'T2-22-23/7',
+      'GSTN': '27AERP',
+      'Mobile': '9167700165',
+      'Bill amount': '0',
+    },
+    {
+      'id': '2',
+      'Customer Name': 'pk_vsk',
+      'Date': '04 / 06 / 2022',
+      'GST Amt.': '0.00',
+      'Invoice No': 'T2-22-23/7',
+      'GSTN': '27AERP',
+      'Mobile': '9167700165',
+      'Bill amount': '0',
+    },
+    {
+      'id': '3',
+      'Customer Name': 'pk_vsk',
+      'Date': '04 / 06 / 2022',
+      'GST Amt.': '0.00',
+      'Invoice No': 'T2-22-23/7',
+      'GSTN': '27AERP',
+      'Mobile': '9167700165',
+      'Bill amount': '0',
+    },
+  ];
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: DataTable(
-                    columnSpacing: 12,
-                    horizontalMargin: 12,
-                    columns: const[
-                      DataColumn(
-                          label: Text(
-                            "Cr No.",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Customer Name",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Date",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "GST Amt.",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Invoice No",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "GSTN",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Mobile",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Bill amount",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                      DataColumn(
-                          label: Text(
-                            "Action",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          )),
-                    ],
-                    rows: <DataRow>[
-                      DataRow(cells: <DataCell>[
-                        DataCell(Text("1")),
-                        DataCell(Text("pk_vsk")),
-                        DataCell(Text("04/06/2022")),
-                        DataCell(Text("0.00")),
-                        DataCell(Text("T2-22-23/7")),
-                        DataCell(Text("27AERP")),
-                        DataCell(Text("9167700165")),
-                        DataCell(Text("0")),
-                        DataCell( ButtonBar(
-                            children: [
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.print, color: Colors.blue)),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.edit, color: Colors.green)),
-                              IconButton(
-                                  onPressed: () {
-                                    // Navigator.push(context, MaterialPageRoute(builder: (context)=> Loaction(),),);
-                                  },
-                                  icon: Icon(Icons.location_pin, color: Colors.blueAccent)),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, color: Colors.red))
-                            ],
-                          ),
-                        ),
-                      ]),
-                      DataRow(cells: <DataCell>[
-                        DataCell(Text("2")),
-                        DataCell(Text("pk_snb")),
-                        DataCell(Text("25/06/2022")),
-                        DataCell(Text("0.00")),
-                        DataCell(Text("T2-22-53/7")),
-                        DataCell(Text("27AERPSPR")),
-                        DataCell(Text('9096857884')),
-                        DataCell(Text("0")),
-                        DataCell(
-                          ButtonBar(
-                            children: [
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.print, color: Colors.blue)),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.edit, color: Colors.green)),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.location_pin, color: Colors.blueAccent)),
-                              IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, color: Colors.red))
-                            ],
-                          ),
-                        )
-                      ]),
-                    ]),
-              )
-            ],
-          ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+              ),
+              child: DataTable(
+                headingTextStyle:
+                const TextStyle(fontWeight: FontWeight.bold,),
+                headingRowColor:
+                MaterialStateProperty.resolveWith((states) => Colors.black),
+                columnSpacing: 12,
+                horizontalMargin: 12,
+                columns: const [
+                  DataColumn(
+                      label: Text(
+                    "Cr No.",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Customer Name",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Date",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "GST Amt.",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Invoice No",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "GSTN",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Mobile",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Bill amount",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    "Action",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )),
+                ],
+                rows: _salerow(),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+  List<DataRow> _salerow() {
+    return _sale
+        .map((sale) => DataRow(cells: <DataCell>[
+              DataCell(Text(sale['id'])),
+              DataCell(Text(sale['Customer Name'])),
+              DataCell(Text(sale['Date'])),
+              DataCell(Text(sale['GST Amt.'])),
+              DataCell(Text(sale['Invoice No'])),
+              DataCell(Text(sale['GSTN'])),
+              DataCell(Text(sale['Mobile'])),
+              DataCell(Text(sale['Bill amount'])),
+              DataCell(
+                ButtonBar(
+                  children: [
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.print, color: Colors.blue)),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.edit, color: Colors.green)),
+                    IconButton(
+                        onPressed: () {
+                          // Navigator.push(context, MaterialPageRoute(builder: (context)=> Loaction(),),);
+                        },
+                        icon:
+                            const Icon(Icons.location_pin, color: Colors.blueAccent)),
+                    IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete, color: Colors.red))
+                  ],
+                ),
+              ),
+            ]))
+        .toList();
   }
 }

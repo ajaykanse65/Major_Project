@@ -9,33 +9,36 @@ import 'package:intl/intl.dart';
 import '../widget/table_widget.dart';
 import '../widget/total_count_widget.dart';
 
-void main() => runApp(new_sale());
+class new_sale extends StatefulWidget {
+  @override
+  State<new_sale> createState() => _new_saleState();
+}
 
-class new_sale extends StatelessWidget {
+class _new_saleState extends State<new_sale> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Sales",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: MultilevelDrawerWidget(),
-      appBar: SearchBar(),
+      floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: const Text("New Sales",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
+      drawer: const MultilevelDrawerWidget(),
+      appBar: const SearchBar(),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(10.0),
+          margin: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 10,),
-              HeadlineWidget(bal: '5000',),
-              SizedBox(
+              const SizedBox(height: 10,),
+              const HeadlineWidget(bal: '5000',),
+              const SizedBox(
                 height: 10.0,
               ),
-              DatePickerWidget(),
-              TotalCountWidget(title: 'Total No. Of Invoice :', count: '5',),
+              const DatePickerWidget(),
+              const TotalCountWidget(title: 'Total No. Of Invoice :', count: '5',),
               Padding(
                 padding: const EdgeInsets.all(9.0),
                 child: buildSearchField(),
               ),
-              TableWidgetPage(),
+               const TableWidgetPage(),
             ],
           ),
         ),
