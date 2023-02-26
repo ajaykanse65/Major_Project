@@ -9,8 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() => runApp(const App());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const App());
+}
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -40,6 +47,19 @@ class _LoginPageState extends State<LoginPage2> {
   var passwordController = TextEditingController();
   var mnoController = TextEditingController();
   bool loading =  false;
+  String? FCMtoken = " ";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        FCMtoken = token;
+      });
+      // savetoken(token!);
+    });
+  }
 
   bool _isHidden = true;
   var items = ['Admin','Operator','emp'];
@@ -69,7 +89,7 @@ class _LoginPageState extends State<LoginPage2> {
                 ),
               ], color: Colors.black,fontSize: 45,fontWeight: FontWeight.bold,fontFamily: "Ubuntu" ),),
               const SizedBox(height: 50,),
-              buildTextField('User Name','Password','Mobile No'),
+              buildTextField('User Name','Password'),
               const SizedBox(height: 20,),
               buildButtonContainer(),
               const SizedBox(height: 20,),
@@ -82,14 +102,14 @@ class _LoginPageState extends State<LoginPage2> {
   }
 
   Future<void> login() async {
-    const String apiUrl = 'http://192.168.10.243/JoogadOperatorAppApi/getData.php';
+    const String apiUrl = 'https://androidtest.joogadnet.com/JoogadOperatorAppApi1/getData.php';
     if (userController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var response = await http.post(Uri.parse(apiUrl),
-          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text
+          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text, 'FCM_TOKEN' : FCMtoken
           }));
       if (response.statusCode == 200) {
-        // print(response.body);
-        var resData = json.decode(response.body);
+        print(response.body);
+        var resData = jsonDecode(response.body);
         String Status = resData['Status'];
         if(Status != 'Success'){
           ScaffoldMessenger.of(context).showSnackBar(
@@ -123,13 +143,13 @@ class _LoginPageState extends State<LoginPage2> {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
             ),
           );
-          final SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.setString('username', userController.text);
-          preferences.setString('password', passwordController.text);
-          preferences.setString('mno', mnoController.text);
-          print(preferences.getString('username'));
+          // final SharedPreferences preferences = await SharedPreferences.getInstance();
+          // preferences.setString('username', userController.text);
+          // preferences.setString('password', passwordController.text);
+          // preferences.setString('mno', mnoController.text);
+          // print(preferences.getString('username'));
           // Add Preferences Here
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const home()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  home()));
         }
       }
     } else {
@@ -151,7 +171,7 @@ class _LoginPageState extends State<LoginPage2> {
     }
   }
 
-  Widget buildTextField(String hintText1, hintText2, hintText3)  {
+  Widget buildTextField(String hintText1, hintText2)  {
     return Padding(
       padding: const EdgeInsets.only(left: 25,right: 25),
       child: Column(
@@ -189,22 +209,22 @@ class _LoginPageState extends State<LoginPage2> {
             ),
             obscureText: hintText2 == "Password" ? _isHidden : false,
           ),
-          const SizedBox(height: 25,),
-          TextFormField( // Comment this code after login
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
-            controller: mnoController,
-            decoration: InputDecoration(
-                hintText: hintText3,
-                hintStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                ),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                prefixIcon: const Icon(Icons.lock),)
-            ), // Comment this code after login
+          // const SizedBox(height: 25,),
+          // TextFormField( // Comment this code after login
+          //     keyboardType: TextInputType.number,
+          //     inputFormatters: <TextInputFormatter>[
+          //       FilteringTextInputFormatter.digitsOnly
+          //     ],
+          //   controller: mnoController,
+          //   decoration: InputDecoration(
+          //       hintText: hintText3,
+          //       hintStyle: const TextStyle(
+          //         color: Colors.black,
+          //         fontSize: 16.0,
+          //       ),
+          //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          //       prefixIcon: const Icon(Icons.lock),)
+          //   ), // Comment this code after login
         ],
       ),
     );
@@ -219,9 +239,8 @@ class _LoginPageState extends State<LoginPage2> {
         onPressed: () async {
           if (loading) return;
           setState(() => loading = true);
-          await Future.delayed(const Duration(seconds: 2));
+          await Future.delayed(const Duration(seconds: 1));
           login();
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
           setState(() => loading = false);
         },
         dimensionheight: 35,

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widget/table_widget.dart';
 import '../widget/total_count_widget.dart';
+void main() => runApp(new_sale());
 
 class new_sale extends StatefulWidget {
   @override

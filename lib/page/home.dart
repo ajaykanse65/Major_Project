@@ -16,18 +16,7 @@ class home extends StatefulWidget {
 class _homeState extends State<home> {
   late SharedPreferences preferences;
   String email ="";
-  @override
-  void initState(){
-    super.initState();
-    staylogin();
-  }
-  Future staylogin() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    var email = preferences.getString('username').toString();
-    setState(() {
-      email = email;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
