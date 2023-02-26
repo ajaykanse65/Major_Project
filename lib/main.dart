@@ -82,11 +82,10 @@ class _LoginPageState extends State<LoginPage2> {
   }
 
   Future<void> login() async {
-    const String apiUrl = 'https://androidtest.joogadnet.com/androidAppApi/getData.php';
-    if (userController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty && mnoController.text.isNotEmpty) {
+    const String apiUrl = 'http://192.168.10.243/JoogadOperatorAppApi/getData.php';
+    if (userController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       var response = await http.post(Uri.parse(apiUrl),
-          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text, 'mobileNo' : mnoController.text
+          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text
           }));
       if (response.statusCode == 200) {
         // print(response.body);
