@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:bms/page/password.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -107,15 +106,14 @@ class _LoginPageState extends State<LoginPage2> {
           body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text, 'FCM_TOKEN' : FCMtoken
           }));
       if (response.statusCode == 200) {
-        print(response.body);
         var resData = jsonDecode(response.body);
-        String Status = resData['Status'];
-        if(Status != 'Success'){
+        String status = resData['Status'];
+        if(status != 'Success'){
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               padding: const EdgeInsets.all(5),
               content: Text(
-                Status,
+                status,
                 style: const TextStyle(
                      fontSize: 15, letterSpacing: 0.5),
                 textAlign: TextAlign.center,
@@ -146,16 +144,8 @@ class _LoginPageState extends State<LoginPage2> {
           preferences.setString('loginId', resData['LOGIN_ID'] as String);
           final String encodeList = jsonEncode(resData['menuList']);
           preferences.setString('menulist', encodeList);
-          // print(encodeList);
-          // print(preferences.setStringList('test', <String>[resData['menuList']]));
-          // print(preferences.setString('mylist', jsonEncode('menuList')));
-          // preferences.setString('username', userController.text);
-          // preferences.setString('password', passwordController.text);
-          // preferences.setString('mno', mnoController.text);
-          // print(preferences.getString('username'));
           // Add Preferences Here
-
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>  home()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  const home()));
         }
       }
     } else {
