@@ -1,11 +1,8 @@
-import 'package:bms/page/reminder.dart';
-import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/datepicker_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
 import 'package:bms/widget/total_count_widget.dart';
 import 'package:flutter/material.dart';
-import '../main.dart';
 import '../widget/navigation_drawer_widget.dart';
 
 void main() => runApp(quotation());
@@ -14,7 +11,7 @@ class quotation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Quatation",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
+      floatingActionButton: FloatingActionButton.extended(onPressed: (){},label: Text("New Quatation",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
       drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: SingleChildScrollView(

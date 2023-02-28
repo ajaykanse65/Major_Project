@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bms/Utils/colors.dart';
 import 'package:bms/page/bank.dart';
 import 'package:bms/page/cm_invoice.dart';
@@ -23,8 +25,8 @@ import 'package:bms/page/task_manager.dart';
 import 'package:bms/page/utilization.dart';
 import 'package:bms/page/vendor.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../page/topup.dart';
-
 class MultilevelDrawerWidget extends StatefulWidget {
   const MultilevelDrawerWidget({Key? key}) : super(key: key);
 
@@ -33,15 +35,22 @@ class MultilevelDrawerWidget extends StatefulWidget {
 }
 
 class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
-  List<String> _menu = ["DashBoard","Top-Up","Network","New Sales","Utilization","Quotation","Purchase",
-                        "Expense","Bank","New Users","Task Manager","User Info. Renewal","Online Users",
-                          "Customer","Vendor","Product","Plans","Invoice","ISP Invoice","Commission Invoice",
-                          "Receipts","Employee","Report","GST Report"];
+  List data =[];
 
-
-
-  bool isLoading = false;
-  // final padding = EdgeInsets.symmetric(horizontal: 10);
+  late SharedPreferences preferences;
+  @override
+  void initState(){
+    super.initState();
+    sharedData();
+  }
+  void sharedData() async{
+    preferences = await SharedPreferences.getInstance();
+    var list = preferences.getString('menulist') as String;
+    var menulist =jsonDecode(list) as List;
+    setState(() {
+      data = menulist;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,7 +62,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
         width: 200,
         child: Column(
             children:  [
-              DrawerHeader(
+              const DrawerHeader(
                 decoration:
                 BoxDecoration(gradient: LinearGradient(colors: cardcolor)),
                 child: Center(
@@ -68,21 +77,22 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  children: _menu.map((menu) {
+                child:
+                 ListView(
+                  children: data.map((menu) {
                     return ListTile(
                       title: Text(menu,style:const TextStyle(fontWeight: FontWeight.bold),),
                       onTap: (){
-                        if(menu == 'Network'){
+                        if(menu == 'View Network'){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Network()));
                         }else if(menu == "Top-Up"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => topup()));
-                        }else if(menu == "DashBoard"){
+                        }else if(menu == "Dashboard"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
-                        }else if(menu == "New Sales"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const home()));
+                        }else if(menu == "New Sale"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => new_sale()));
                         }else if(menu == "Utilization"){
@@ -99,17 +109,17 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => expense()));
                         }else if(menu == "Bank"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => bank()));
-                        }else if(menu == "New Users"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const bank()));
+                        }else if(menu == "New User"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => new_user()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const new_user()));
                         }else if(menu == "Task Manager"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => TaskManager()));
-                        }else if(menu == "User Info. Renewal"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const TaskManager()));
+                        }else if(menu == "User Info."){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => renewal()));
-                        }else if(menu == "Online Users"){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const renewal()));
+                        }else if(menu == "Online User"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => on_users()));
                         }else if(menu == "Customer"){
@@ -118,7 +128,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                         }else if(menu == "Vendor"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => vendor()));
-                        }else if(menu == "Product"){
+                        }else if(menu == "Product/Service"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => Product1()));
                         }else if(menu == "Plans"){
@@ -132,7 +142,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => isp_invoice()));
                         }else if(menu == "Commission Invoice"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => cm_invoice()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const cm_invoice()));
                         }else if(menu == "Receipts"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => receipts()));
@@ -141,7 +151,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => emp()));
                         }else if(menu == "Report"){
                           Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => report()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const report()));
                         }else if(menu == "GST Report"){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => gst_report()));
@@ -151,473 +161,11 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                   }).toList(),
                 ),
               ),
-              // Expanded(
-              //     // child: ListView.builder(
-              //     //     itemCount: 10,
-              //     //     itemBuilder: (_, index){
-              //     //       return ListTile(
-              //     //         title: Text("Data $index"),
-              //     //         onTap: (){
-              //     //           if (index == 1){
-              //     //             Navigator.push(context, MaterialPageRoute(builder: (context) => topup()));
-              //     //           }
-              //     //         },
-              //     //       );
-              //     //     })
-              // ),
-              // ListTile(
-              //   title: Text("data"),
-              // ),
-              // ListView.builder(
-              //     itemCount: 10,
-              //     itemBuilder: (_, index){
-              //       return ListTile(
-              //         title: Text("Data $index"),
-              //       );
-              //     }),
-              // ListView.builder(
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return ListTile(
-              //         title: const Text(
-              //           "Dashboard",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         leading: const Icon(Icons.home),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(context,
-              //               MaterialPageRoute(builder: (context) => const home()));
-              //         });
-              //   },
-              // ),
-              // const Divider(
-              //   color: Colors.black,
-              // ),
-              // ExpansionTile(
-              //   title: const Text(
-              //     "Sales",
-              //     style: TextStyle(
-              //         color: Colors.black, fontWeight: FontWeight.bold),
-              //   ),
-              //   leading: const Icon(Icons.production_quantity_limits),
-              //   trailing: const Icon(Icons.arrow_right),
-              //   children: [
-              //     ListTile(
-              //         title: const Text(
-              //           "New Sales",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => new_sale()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Utilization",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => uitilizationn()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Quotation",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => quotation()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Purchase",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => purchase()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Expense",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(context,
-              //               MaterialPageRoute(builder: (context) => expense()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Bank",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const bank()));
-              //         })
-              //   ],
-              // ),
-              // const Divider(
-              //   color: Colors.black,
-              // ),
-              // ExpansionTile(
-              //   title: const Text(
-              //     "Users",
-              //     style: TextStyle(
-              //         color: Colors.black, fontWeight: FontWeight.bold),
-              //   ),
-              //   leading: const Icon(Icons.person),
-              //   trailing: const Icon(Icons.arrow_right),
-              //   children: [
-              //     ListTile(
-              //         title: const Text(
-              //           "New Users",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const new_user()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Task Manager",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const TaskManager()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "User Info. Renewal",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const renewal()));
-              //           //           trailing: Icon(Icons.arrow_right),)
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Online Users",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => on_users()));
-              //         })
-              //   ],
-              // ),
-              // const Divider(
-              //   color: Colors.black,
-              // ),
-              // ExpansionTile(
-              //   title: const Text(
-              //     "Service",
-              //     style: TextStyle(
-              //         color: Colors.black, fontWeight: FontWeight.bold),
-              //   ),
-              //   leading: const Icon(Icons.miscellaneous_services),
-              //   trailing: const Icon(Icons.arrow_right),
-              //   children: [
-              //     ListTile(
-              //         title: const Text(
-              //           "Customer",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => customer()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Vendor",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(context,
-              //               MaterialPageRoute(builder: (context) => vendor()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Product",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => Product1()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Plans",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(context,
-              //               MaterialPageRoute(builder: (context) => plans()));
-              //         })
-              //   ],
-              // ),
-              // const Divider(
-              //   color: Colors.black,
-              // ),
-              // ExpansionTile(
-              //   title: const Text(
-              //     "Invoice",
-              //     style: TextStyle(
-              //         color: Colors.black, fontWeight: FontWeight.bold),
-              //   ),
-              //   leading: const Icon(Icons.print),
-              //   trailing: const Icon(Icons.arrow_right),
-              //   children: [
-              //     ListTile(
-              //         title: const Text(
-              //           "Invoice",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(context,
-              //               MaterialPageRoute(builder: (context) => invoice()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "ISP Invoice",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => isp_invoice()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Commission Invoice",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const cm_invoice()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "Receipts",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => receipts()));
-              //         })
-              //   ],
-              // ),
-              // const Divider(
-              //   color: Colors.black,
-              // ),
-              // ListTile(
-              //     title: const Text(
-              //       "Online Topup",
-              //       style: TextStyle(
-              //           color: Colors.black, fontWeight: FontWeight.bold),
-              //     ),
-              //     leading: const Icon(Icons.currency_rupee),
-              //     onTap: () {
-              //       Navigator.pop(context);
-              //       Navigator.push(context,
-              //           MaterialPageRoute(builder: (context) => topup()));
-              //     }),
-              // ListTile(
-              //     title: const Text(
-              //       "Employee",
-              //       style: TextStyle(
-              //           color: Colors.black, fontWeight: FontWeight.bold),
-              //     ),
-              //     leading: const Icon(Icons.person),
-              //     onTap: () {
-              //       Navigator.pop(context);
-              //       Navigator.push(context,
-              //           MaterialPageRoute(builder: (context) => emp()));
-              //     }),
-              // ListTile(
-              //     title: const Text(
-              //       "View Network",
-              //       style: TextStyle(
-              //           color: Colors.black, fontWeight: FontWeight.bold),
-              //     ),
-              //     leading: const Icon(Icons.network_check_sharp),
-              //     onTap: () {
-              //       Navigator.pop(context);
-              //       Navigator.push(context,
-              //           MaterialPageRoute(builder: (context) => const Network()));
-              //     }),
-              // ExpansionTile(
-              //   title: const Text(
-              //     "Report",
-              //     style: TextStyle(
-              //         color: Colors.black, fontWeight: FontWeight.bold),
-              //   ),
-              //   leading: const Icon(Icons.file_copy_rounded),
-              //   trailing: const Icon(Icons.arrow_right),
-              //   children: [
-              //     ListTile(
-              //         title: const Text(
-              //           "Report",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => const report()));
-              //         }),
-              //     ListTile(
-              //         title: const Text(
-              //           "GST Report",
-              //           style: TextStyle(
-              //               color: Colors.black, fontWeight: FontWeight.bold),
-              //         ),
-              //         onTap: () {
-              //           Navigator.pop(context);
-              //           Navigator.push(
-              //               context,
-              //               MaterialPageRoute(
-              //                   builder: (context) => gst_report()));
-              //         })
-              //   ],
-              // ),
             ],
           ),
       )
     );
   }
-
-  // Widget test(){
-  //   return ListView.builder(itemBuilder: (context,index){
-  //     return ListTile(
-  //       tileColor: Colors.black,
-  //       title: Text(_menu[index]),
-  //       onTap: (){
-  //         if(_menu == 'DashBoard'){
-  //           Navigator.push(context, MaterialPageRoute(builder: (context) => Network()));
-  //         }if(_menu == 'Top-UP'){
-  //           Navigator.push(context, MaterialPageRoute(builder: (context) => reminder()));
-  //         }
-  //       },
-  //     );
-  //   });
-  // }
-  //
-  //
-  // List<dynamic> Menudata(){
-  //   return _menu.map((menudata) => ListTile(
-  //     title: Text(menudata),
-  //   )).toList();
-  // }
-
-  // ListView getBody(BuildContext context){
-  //   return ListView.builder(
-  //     itemCount: 10,
-  //       itemBuilder: (_, index){
-  //         return ListTile(
-  //           title: Text("Data $index"),
-  //     );
-  //   });
-  // }
-
-  // Widget getBody() {
-  //   if(data.contains(null) || data.length < 0 || isLoading){
-  //     return Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(Colors.black),));
-  //   }
-  //   return ListView.builder(
-  //       itemCount: data.length,
-  //       itemBuilder: (context, index) {
-  //         return localdrawe(data[index]);
-  //       });
-  // }
-
-  // Widget localdrawe (index){
-  //   return ListView.builder(
-  //     itemBuilder: (BuildContext context, int index) {
-  //       return ListTile(
-  //           title: const Text(
-  //             "Dashboard",
-  //             style: TextStyle(
-  //                 color: Colors.black, fontWeight: FontWeight.bold),
-  //           ),
-  //           leading: const Icon(Icons.home),
-  //           onTap: () {
-  //             Navigator.pop(context);
-  //             Navigator.push(context,
-  //                 MaterialPageRoute(builder: (context) => const home()));
-  //           });
-  //     },
-  //   );
-  // }
 }
 
 Widget buildSearchField() {

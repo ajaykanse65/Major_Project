@@ -1,8 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
-
 import 'package:bms/page/home.dart';
+import 'dart:convert';
 import 'package:bms/page/password.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -143,12 +142,19 @@ class _LoginPageState extends State<LoginPage2> {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
             ),
           );
-          // final SharedPreferences preferences = await SharedPreferences.getInstance();
+          final SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.setString('loginId', resData['LOGIN_ID'] as String);
+          final String encodeList = jsonEncode(resData['menuList']);
+          preferences.setString('menulist', encodeList);
+          // print(encodeList);
+          // print(preferences.setStringList('test', <String>[resData['menuList']]));
+          // print(preferences.setString('mylist', jsonEncode('menuList')));
           // preferences.setString('username', userController.text);
           // preferences.setString('password', passwordController.text);
           // preferences.setString('mno', mnoController.text);
           // print(preferences.getString('username'));
           // Add Preferences Here
+
           Navigator.push(context, MaterialPageRoute(builder: (context) =>  home()));
         }
       }
