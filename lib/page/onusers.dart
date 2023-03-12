@@ -6,9 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:bms/widget/navigation_drawer_widget.dart';
 import 'package:intl/intl.dart';
 
-class on_users extends StatelessWidget {
+class on_users extends StatefulWidget {
+  @override
+  State<on_users> createState() => _on_usersState();
+}
+
+class _on_usersState extends State<on_users> {
   String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
   String tdata = DateFormat("HH:mm:ss a").format(DateTime.now());
+
   @override
   Widget build(BuildContext context) => Scaffold(
         drawer: MultilevelDrawerWidget(),
@@ -42,39 +49,47 @@ class on_users extends StatelessWidget {
                 ),
                 FittedBox(
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Online User list as on',
-                          style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          cdate,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          tdata,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        'Online User list as on',
+                        style: TextStyle(
+                            color: Colors.grey.shade800,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        cdate,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        tdata,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(9.0),
                   child: buildSearchField(),
                 ),
-
-                CustomButtonWidget(title: Text('Disconnect',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18,color: Colors.white),), onPressed: (){}, dimensionheight: 35, dimensionwidth: 110)
+                CustomButtonWidget(
+                    title: Text(
+                      'Disconnect',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
+                          color: Colors.white),
+                    ),
+                    onPressed: () {},
+                    dimensionheight: 35,
+                    dimensionwidth: 110)
               ],
             ),
           ),

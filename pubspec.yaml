@@ -39,6 +39,7 @@ dependencies:
   country_state_city_picker: ^1.2.8
   file_picker: ^4.6.1
   dot_navigation_bar: ^1.0.1+4
+  flutter_zoom_drawer: any
   firebase_messaging: ^14.2.1
   flutter_speed_dial: ^6.0.0
   floating_action_bubble: ^1.1.4
@@ -48,6 +49,7 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   google_maps_flutter: ^2.1.10
   intl: ^0.17.0
+  rive: any
   flutter:
     sdk: flutter
 
@@ -83,6 +85,7 @@ flutter:
      - assets/dp.png
      - assets/person.png
      - assets/card.png
+     - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
