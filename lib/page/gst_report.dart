@@ -11,7 +11,7 @@ import '../main.dart';
 class gst_report extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-    drawer: MultilevelDrawerWidget(),
+
     appBar: SearchBar(),
     body: Container(
       margin: EdgeInsets.all(10.0),

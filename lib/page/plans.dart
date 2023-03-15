@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
 import 'package:bms/widget/navigation_drawer_widget.dart';
@@ -11,7 +12,7 @@ class plans extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

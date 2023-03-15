@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/page/reminder.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
@@ -35,7 +36,7 @@ class _reportState extends State<report> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: const EdgeInsets.all(10.0),

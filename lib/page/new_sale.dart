@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/circle_widget.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
@@ -20,7 +21,7 @@ class _new_saleState extends State<new_sale> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: const Text("New Sales",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: const MultilevelDrawerWidget(),
+
       appBar: const SearchBar(),
       body: SingleChildScrollView(
         child: Container(

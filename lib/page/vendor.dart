@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/navigation_drawer_widget.dart';
@@ -12,7 +13,7 @@ class vendor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New vendor",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

@@ -40,7 +40,7 @@ class _NetworkState extends State<Network> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MultilevelDrawerWidget(),
+
       appBar: const SearchBar(),
       body: Padding(
         padding: const EdgeInsets.all(10),

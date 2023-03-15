@@ -21,7 +21,7 @@ class _topupState extends State<topup> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: const EdgeInsets.all(10.0),

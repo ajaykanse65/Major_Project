@@ -99,7 +99,6 @@ class _new_userState extends State<new_user> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

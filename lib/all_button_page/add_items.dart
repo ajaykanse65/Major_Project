@@ -25,7 +25,6 @@ class _AddItemsProductState extends State<AddItemsProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: SingleChildScrollView(
         child: Container(

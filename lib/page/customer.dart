@@ -2,7 +2,7 @@ import 'package:bms/page/reminder.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
-import 'package:bms/widget/navigation_drawer_widget.dart';
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/total_count_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +15,7 @@ class customer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Customer",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

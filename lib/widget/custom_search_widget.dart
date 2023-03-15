@@ -1,6 +1,7 @@
 import 'package:bms/main.dart';
 import 'package:bms/page/reminder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class SearchBar extends StatefulWidget implements PreferredSizeWidget {
   final Action;
@@ -20,6 +21,7 @@ class _SearchBarState extends State<SearchBar> {
       iconTheme: const IconThemeData(color: Colors.black),
       title: customSearchBar,
       actions: <Widget>[
+
         IconButton(
           onPressed: () {
             setState(() {
@@ -68,7 +70,7 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ],
       centerTitle: true,
-      backgroundColor: Colors.deepOrangeAccent.shade200,
+      backgroundColor: Color(0xFF778ba3),
     );
   }
 }

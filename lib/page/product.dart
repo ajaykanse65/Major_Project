@@ -1,5 +1,6 @@
 
 import 'package:bms/Tables/product_tables.dart';
+import 'package:bms/page/home.dart';
 import 'package:flutter/material.dart';
 import '../all_button_page/add_items.dart';
 import '../widget/custom_search_widget.dart';
@@ -23,7 +24,7 @@ class Product1 extends StatelessWidget {
         ),
         elevation: 15,
       ),
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

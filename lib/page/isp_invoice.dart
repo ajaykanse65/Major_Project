@@ -22,7 +22,7 @@ class isp_invoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         width: MediaQuery.of(context).size.width,

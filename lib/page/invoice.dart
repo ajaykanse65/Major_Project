@@ -19,7 +19,7 @@ class invoice extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: Container(
         width: MediaQuery.of(context).size.width,

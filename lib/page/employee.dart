@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
@@ -12,7 +13,6 @@ class emp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

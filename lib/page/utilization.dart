@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/page/reminder.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
@@ -14,7 +15,7 @@ class uitilizationn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Utilize",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: SingleChildScrollView(
         child: Container(

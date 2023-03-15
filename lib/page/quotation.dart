@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/datepicker_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
@@ -12,7 +13,7 @@ class quotation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(onPressed: (){},label: Text("New Quatation",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      drawer: MultilevelDrawerWidget(),
+
       appBar: SearchBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

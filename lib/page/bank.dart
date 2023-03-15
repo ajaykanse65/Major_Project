@@ -116,7 +116,6 @@ class _bankState extends State<bank> with SingleTickerProviderStateMixin {
         iconColor: Colors.white,
         iconData: Icons.menu,
       ),
-      drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: Container(
         width: MediaQuery.of(context).size.width,

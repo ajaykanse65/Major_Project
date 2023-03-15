@@ -6,6 +6,7 @@ import '../widget/custom_search_widget.dart';
 import '../widget/navigation_drawer_widget.dart';
 import '../widget/table_widget.dart';
 import '../widget/total_count_widget.dart';
+import 'home.dart';
 
 class renewal extends StatefulWidget {
   const renewal({Key? key}) : super(key: key);
@@ -19,7 +20,6 @@ class _renewalState extends State<renewal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MultilevelDrawerWidget(),
       appBar: SearchBar(),
       body: Container(
         margin: EdgeInsets.all(10.0),

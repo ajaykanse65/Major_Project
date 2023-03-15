@@ -1,3 +1,4 @@
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/datepicker_widget.dart';
 import 'package:bms/widget/dropdown_widget.dart';
@@ -14,7 +15,7 @@ class TaskManager extends StatelessWidget {
       extendBody: true,
       floatingActionButton: FloatingActionButton.extended(backgroundColor: Colors.deepOrangeAccent.shade200,onPressed: (){},label: Text("Add New Task",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
       appBar: SearchBar(),
-      drawer: MultilevelDrawerWidget(),
+
       body: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,

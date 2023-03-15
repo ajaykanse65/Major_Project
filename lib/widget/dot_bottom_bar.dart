@@ -36,35 +36,37 @@ int _selectedIndex = 0;
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
       child: DotNavigationBar(
+        backgroundColor: Colors.black.withOpacity(0.1),
         margin: EdgeInsets.only(left: 10, right: 10),
         currentIndex: _selectedIndex,
-        dotIndicatorColor: Colors.white,
+        dotIndicatorColor: Color(0xFF163252)
+        ,
         unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.deepOrangeAccent.shade200,
+        selectedItemColor: Color(0xFF163252),
         onTap: _handleIndexChanged,
         items: [
           DotNavigationBarItem(
             icon: Icon(Icons.home),
-            selectedColor: Colors.deepOrangeAccent.shade200,
+            selectedColor: Color(0xFF163252),
             unselectedColor: Colors.black,
           ),
 
           DotNavigationBarItem(
             icon: Icon(Icons.currency_rupee),
-            selectedColor: Colors.deepOrangeAccent.shade200,
+            selectedColor: Color(0xFF163252),
             unselectedColor: Colors.black,
           ),
 
           DotNavigationBarItem(
             icon: Icon(Icons.task),
-            selectedColor: Colors.deepOrangeAccent.shade200,
+            selectedColor: Color(0xFF163252),
             unselectedColor: Colors.black,
           ),
 
           DotNavigationBarItem(
             icon: Icon(Icons.person),
             unselectedColor: Colors.black,
-            selectedColor: Colors.deepOrangeAccent.shade200,
+            selectedColor: Color(0xFF163252),
           ),
         ],
       ),

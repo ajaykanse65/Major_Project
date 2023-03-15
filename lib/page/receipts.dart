@@ -5,13 +5,13 @@ import 'package:bms/widget/dropdown_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
 import 'package:flutter/material.dart';
 import '../widget/navigation_drawer_widget.dart';
+import 'home.dart';
 
 class receipts extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: SearchBar(),
     floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Receipt",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-        drawer: MultilevelDrawerWidget(),
         body: SingleChildScrollView(
           child: Container(
             width: MediaQuery.of(context).size.width,
