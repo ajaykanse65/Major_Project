@@ -1125,8 +1125,6 @@ class _new_userState extends State<new_user> {
                       ),
 
                       const SizedBox(height: 10,),
-
-
                       Row(
                         children: [
                           ElevatedButton(onPressed: (){},style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),child: const Icon(Icons.add,size: 30,color: Colors.white,),),
@@ -1157,7 +1155,6 @@ class _new_userState extends State<new_user> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
