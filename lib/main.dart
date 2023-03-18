@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:bms/Utils/app_theme.dart';
 import 'package:bms/Utils/loading_dialog.dart';
 import 'package:bms/Utils/app_color.dart';
 import 'package:bms/page/home.dart';
@@ -28,8 +29,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: AppTheme.dark,
+      darkTheme: AppTheme.light,
       // theme: ThemeData(
       //     primaryColor: Colors.deepOrangeAccent.shade200, fontFamily: "Ubuntu"),
       home: const LoginPage2(),
@@ -252,6 +253,7 @@ class _LoginPageState extends State<LoginPage2> {
           }));
       if (response.statusCode == 200) {
         var resData = jsonDecode(response.body);
+        print(resData);
         String status = resData['Status'];
         if(status != 'Success'){
           trigFail?.change(true);
@@ -289,9 +291,15 @@ class _LoginPageState extends State<LoginPage2> {
           );
           final SharedPreferences preferences = await SharedPreferences.getInstance();
           preferences.setString('loginId', resData['LOGIN_ID'] as String);
+          preferences.setString('empId', resData['EMP_ID'] as String);
+          preferences.setString('username', resData['USER_NAME'] as String);
+          preferences.setString('level', resData['LEVEL'] as String);
+          preferences.setString('mainnetwid', resData['MAIN_NETW_ID'] as String);
+          preferences.setString('subnetwid', resData['SUB_NETW_ID'] as String);
           final String encodeList = jsonEncode(resData['menuList']);
           preferences.setString('menulist', encodeList);
           // Add Preferences Here
+
           Navigator.push(context, MaterialPageRoute(builder: (context) =>  const home()));
         }
       }

@@ -66,7 +66,7 @@ class AppTextStyle {
     fontSize: 16,
   );
   TextStyle bodyMedium = TextStyle(
-    color: Colors.black,
+    color: AppColor.blackGrey,
     fontSize: 14,
   );
   TextStyle bodySmall = TextStyle(

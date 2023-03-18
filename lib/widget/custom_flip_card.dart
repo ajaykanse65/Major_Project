@@ -21,9 +21,7 @@ class CustomFilpcard extends StatelessWidget {
               image: AssetImage("assets/person.png"),
               opacity: 1000.0,
               fit: BoxFit.fill),
-          gradient: LinearGradient(
-            colors: cardcolor,
-          ),
+            color: Color(0xFF607894),
           borderRadius: BorderRadius.circular(25),
         ),
         child: Column(
