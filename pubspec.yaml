@@ -51,6 +51,7 @@ dependencies:
   rive: any
   flutter_zoom_drawer: any
   google_fonts: any
+  flutter_typeahead: any
   flutter:
     sdk: flutter
 

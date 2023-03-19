@@ -23,7 +23,7 @@ class home extends StatefulWidget {
 class _homeState extends State<home> {
   late SharedPreferences preferences;
   var uname ='', level = '', mainid = '', subid = '';
-  var totuser ='', actuser = '', dctuser = '', dsbuser = '', onluser='' ;
+  var totuser ='', actuser = '', dctuser = '', dsbuser = '', onluser='';
   bool isLoading = false;
 
 
@@ -32,6 +32,7 @@ class _homeState extends State<home> {
   void initState() {
     // TODO: implement initState
     loadData();
+    setData();
     super.initState();
   }
 
@@ -90,6 +91,17 @@ class _homeState extends State<home> {
       ),
     );
   }
+   Future<void> setData() async{
+    preferences = await SharedPreferences.getInstance();
+    setState((){
+      totuser = preferences.getString('totuser') as String;
+      actuser = preferences.getString('actuser') as String;
+      dctuser = preferences.getString('dctuser') as String;
+      dsbuser = preferences.getString('dsbuser') as String;
+      onluser = preferences.getString('onlnuser') as String;
+
+    });
+  }
 
   Future<void> loadData() async{
     preferences = await SharedPreferences.getInstance();
@@ -98,11 +110,6 @@ class _homeState extends State<home> {
       level = preferences.getString('level').toString();
       mainid = preferences.getString('mainnetwid').toString();
       subid = preferences.getString('subnetwid').toString();
-      totuser = preferences.getString('totuser') as String;
-      actuser = preferences.getString('actuser') as String;
-      dctuser = preferences.getString('dctuser') as String;
-      dsbuser = preferences.getString('dsbuser') as String;
-      onluser = preferences.getString('onlnuser') as String;
     });
     const String apiUrl = 'https://androidtest.joogadnet.com/JoogadOperatorAppApi1/getData.php';
     var res = await http.post(Uri.parse(apiUrl),
