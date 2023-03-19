@@ -297,13 +297,7 @@ class _LoginPageState extends State<LoginPage2> {
           preferences.setString('mainnetwid', resData['MAIN_NETW_ID'] as String);
           preferences.setString('subnetwid', resData['SUB_NETW_ID'] as String);
           preferences.setString('shrtname', resData['NETW_SHRT_NAME'] as String);
-          preferences.setString('loginId', resData['LOGIN_ID'] as String);
-          preferences.setString('empId', resData['EMP_ID'] as String);
-          preferences.setString('username', resData['USER_NAME'] as String);
-          preferences.setString('level', resData['LEVEL'] as String);
-          preferences.setString('mainnetwid', resData['MAIN_NETW_ID'] as String);
-          preferences.setString('subnetwid', resData['SUB_NETW_ID'] as String);
-          preferences.setString('shrtname', resData['NETW_SHRT_NAME'] as String);
+
           final String encodeList = jsonEncode(resData['menuList']);
           preferences.setString('menulist', encodeList);
           // Add Preferences Here
