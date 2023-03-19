@@ -52,6 +52,8 @@ dependencies:
   flutter_zoom_drawer: any
   google_fonts: any
   flutter_typeahead: any
+  cloud_firestore: any
+  firebase_auth: any
   flutter:
     sdk: flutter
 

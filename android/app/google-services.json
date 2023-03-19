@@ -1,41 +1,34 @@
 {
   "project_info": {
-    "project_number": "348391062977",
-    "project_id": "bms-joogad",
-    "storage_bucket": "bms-joogad.appspot.com"
+    "project_number": "352291763293",
+    "project_id": "majorproject-3dbfa",
+    "storage_bucket": "majorproject-3dbfa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:348391062977:android:bf385b1e83edb3f1df4340",
+        "mobilesdk_app_id": "1:352291763293:android:68c592ba5def7c8dce09b4",
         "android_client_info": {
           "package_name": "com.example.bms"
         }
       },
       "oauth_client": [
         {
-          "client_id": "348391062977-bo0ijebn7jsptsn631h5dtikvm0c41u8.apps.googleusercontent.com",
+          "client_id": "352291763293-t1drss06rlav2rnllmdqeh8irjkn9906.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYL7LQekTdg6SMQyDMiWTS_JLsAxMCmrw"
+          "current_key": "AIzaSyB4jUwsgbNkN47pUFc-lEJz_Zb2KyW-N8c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "348391062977-bo0ijebn7jsptsn631h5dtikvm0c41u8.apps.googleusercontent.com",
+              "client_id": "352291763293-t1drss06rlav2rnllmdqeh8irjkn9906.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "348391062977-v2mlqv8lr6tk89883rld5d4m929ub5kt.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.bmssys"
-              }
             }
           ]
         }

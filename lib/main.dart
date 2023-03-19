@@ -8,6 +8,8 @@ import 'dart:convert';
 import 'package:bms/page/password.dart';
 import 'package:bms/widget/custom_button_widget.dart';
 import 'package:bms/widget/navigation_drawer_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rive/rive.dart';
@@ -56,6 +58,8 @@ class _LoginPageState extends State<LoginPage2> {
   bool loading =  false;
   String? FCMtoken = " ";
   String hintText2 = 'Password';
+
+  final _auth = FirebaseAuth.instance;
 
   StateMachineController? controller;
 
@@ -211,6 +215,11 @@ class _LoginPageState extends State<LoginPage2> {
                           width: MediaQuery.of(context).size.width,
                           height: 64,
                           child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)
+                              ),
+                            ),
                             onPressed: () async{
                               userFocusNode.unfocus();
                               passwordFocusNode.unfocus();
@@ -218,13 +227,8 @@ class _LoginPageState extends State<LoginPage2> {
                               await Future.delayed(const Duration(milliseconds:2000 ));
 
                               if(mounted) Navigator.pop(context);
-                              login();
+                              signInUsingEmailPassword(context: context, email: userController.text, password: passwordController.text);
                               },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)
-                              ),
-                            ),
                             child: const Text("Login",
                               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
@@ -242,180 +246,123 @@ class _LoginPageState extends State<LoginPage2> {
     );
   }
 
-  Future<void> login() async {
-    const String apiUrl = 'https://androidtest.joogadnet.com/JoogadOperatorAppApi1/getData.php';
-    if(userController.text.isEmpty && passwordController.text.isEmpty){
-      trigFail?.change(true);
-    }
-    else if (userController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse(apiUrl),
-          body: ({'action': 'loginChk', 'userName': userController.text, 'password': passwordController.text, 'FCM_TOKEN' : FCMtoken
-          }));
-      if (response.statusCode == 200) {
-        var resData = jsonDecode(response.body);
-        print(resData);
-        String status = resData['Status'];
-        if(status != 'Success'){
-          trigFail?.change(true);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              padding: const EdgeInsets.all(5),
-              content: Text(
-                status,
-                style: const TextStyle(
-                     fontSize: 15, letterSpacing: 0.5),
-                textAlign: TextAlign.center,
-              ),
-              elevation: 6.0,
-              behavior: SnackBarBehavior.floating,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-            ),
-          );
-        }else{
-          trigSuccess?.change(true);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              padding: EdgeInsets.all(5),
-              content: Text(
-                'Login Successfully',
-                style: TextStyle(
-                     fontSize: 15, letterSpacing: 0.5),
-                textAlign: TextAlign.center,
-              ),
-              elevation: 6.0,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-            ),
-          );
-          final SharedPreferences preferences = await SharedPreferences.getInstance();
-          preferences.setString('loginId', resData['LOGIN_ID'] as String);
-          preferences.setString('empId', resData['EMP_ID'] as String);
-          preferences.setString('username', resData['USER_NAME'] as String);
-          preferences.setString('level', resData['LEVEL'] as String);
-          preferences.setString('mainnetwid', resData['MAIN_NETW_ID'] as String);
-          preferences.setString('subnetwid', resData['SUB_NETW_ID'] as String);
-          preferences.setString('shrtname', resData['NETW_SHRT_NAME'] as String);
+  Future<User?> signInUsingEmailPassword({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
 
-          final String encodeList = jsonEncode(resData['menuList']);
-          preferences.setString('menulist', encodeList);
-          // Add Preferences Here
-
-          Navigator.push(context, MaterialPageRoute(builder: (context) =>  const home()));
-        }
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          padding: EdgeInsets.all(5),
-          content: Text(
-            'All Field are Required',
-            style: TextStyle(
-                color: Colors.black, fontSize: 15, letterSpacing: 0.5),
-            textAlign: TextAlign.center,
-          ),
-          elevation: 6.0,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-        ),
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
+      user = userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided.');
+      }
     }
+
+    return user;
   }
 
-  Widget buildTextField(String hintText1, hintText2)  {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25,right: 25),
-      child: Column(
-        children: [
-          TextFormField(
-            controller: userController,
-            decoration: InputDecoration(
-              hintText: hintText1,
-              hintStyle: const TextStyle(
-                color: Colors.black,
-                fontSize: 16.0,
-              ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-              prefixIcon:const Icon(Icons.verified_user)
-                  // : const Icon(Icons.lock),
-            ),
-          ),
-          const SizedBox(height: 25,),
-          TextFormField(
-            controller: passwordController,
-            decoration: InputDecoration(
-              hintText: hintText2,
-              hintStyle: const TextStyle(
-                color: Colors.black,
-                fontSize: 16.0,
-              ),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-              prefixIcon: const Icon(Icons.lock),
-              suffixIcon: hintText2 == 'Password'
-                ? IconButton(onPressed: _toggleVisibility, icon: _isHidden
-                  ? const Icon(Icons.visibility_off)
-                : const Icon(Icons.visibility)
-              )
-              : null
-            ),
-            obscureText: hintText2 == "Password" ? _isHidden : false,
-          ),
-          // const SizedBox(height: 25,),
-          // TextFormField( // Comment this code after login
-          //     keyboardType: TextInputType.number,
-          //     inputFormatters: <TextInputFormatter>[
-          //       FilteringTextInputFormatter.digitsOnly
-          //     ],
-          //   controller: mnoController,
-          //   decoration: InputDecoration(
-          //       hintText: hintText3,
-          //       hintStyle: const TextStyle(
-          //         color: Colors.black,
-          //         fontSize: 16.0,
-          //       ),
-          //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-          //       prefixIcon: const Icon(Icons.lock),)
-          //   ), // Comment this code after login
-        ],
-      ),
-    );
-  }
+  // Widget buildTextField(String hintText1, hintText2)  {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 25,right: 25),
+  //     child: Column(
+  //       children: [
+  //         TextFormField(
+  //           controller: userController,
+  //           decoration: InputDecoration(
+  //             hintText: hintText1,
+  //             hintStyle: const TextStyle(
+  //               color: Colors.black,
+  //               fontSize: 16.0,
+  //             ),
+  //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+  //             prefixIcon:const Icon(Icons.verified_user)
+  //                 // : const Icon(Icons.lock),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 25,),
+  //         TextFormField(
+  //           controller: passwordController,
+  //           decoration: InputDecoration(
+  //             hintText: hintText2,
+  //             hintStyle: const TextStyle(
+  //               color: Colors.black,
+  //               fontSize: 16.0,
+  //             ),
+  //             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+  //             prefixIcon: const Icon(Icons.lock),
+  //             suffixIcon: hintText2 == 'Password'
+  //               ? IconButton(onPressed: _toggleVisibility, icon: _isHidden
+  //                 ? const Icon(Icons.visibility_off)
+  //               : const Icon(Icons.visibility)
+  //             )
+  //             : null
+  //           ),
+  //           obscureText: hintText2 == "Password" ? _isHidden : false,
+  //         ),
+  //         // const SizedBox(height: 25,),
+  //         // TextFormField( // Comment this code after login
+  //         //     keyboardType: TextInputType.number,
+  //         //     inputFormatters: <TextInputFormatter>[
+  //         //       FilteringTextInputFormatter.digitsOnly
+  //         //     ],
+  //         //   controller: mnoController,
+  //         //   decoration: InputDecoration(
+  //         //       hintText: hintText3,
+  //         //       hintStyle: const TextStyle(
+  //         //         color: Colors.black,
+  //         //         fontSize: 16.0,
+  //         //       ),
+  //         //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+  //         //       prefixIcon: const Icon(Icons.lock),)
+  //         //   ), // Comment this code after login
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget buildButtonContainer() {
-    return CustomButtonWidget(
-        title: const Text(
-          "LOGIN",
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        onPressed: () async {
-          if (loading) return;
-          setState(() => loading = true);
-          await Future.delayed(const Duration(seconds: 1));
-          login();
-          setState(() => loading = false);
-        },
-        dimensionheight: 35,
-        dimensionwidth: 100);
-  }
-
-  Widget buildButton() {
-    return Container(
-      alignment: Alignment.bottomRight,
-      child: TextButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => password()));
-        },
-        child: const Text(
-          "Update Password",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
+  // Widget buildButtonContainer() {
+  //   return CustomButtonWidget(
+  //       title: const Text(
+  //         "LOGIN",
+  //         style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+  //       ),
+  //       onPressed: () async {
+  //         if (loading) return;
+  //         setState(() => loading = true);
+  //         await Future.delayed(const Duration(seconds: 1));
+  //         login();
+  //         setState(() => loading = false);
+  //       },
+  //       dimensionheight: 35,
+  //       dimensionwidth: 100);
+  // }
+  //
+  // Widget buildButton() {
+  //   return Container(
+  //     alignment: Alignment.bottomRight,
+  //     child: TextButton(
+  //       onPressed: () {
+  //         Navigator.push(
+  //             context, MaterialPageRoute(builder: (context) => password()));
+  //       },
+  //       child: const Text(
+  //         "Update Password",
+  //         style: TextStyle(
+  //             color: Colors.black,
+  //             fontSize: 20.0,
+  //             fontWeight: FontWeight.bold),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
