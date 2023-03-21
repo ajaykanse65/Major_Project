@@ -14,7 +14,7 @@ class TaskManager extends StatelessWidget {
 
       extendBody: true,
       floatingActionButton: FloatingActionButton.extended(backgroundColor: Colors.deepOrangeAccent.shade200,onPressed: (){},label: Text("Add New Task",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
 
       body: SingleChildScrollView(
         child: Container(

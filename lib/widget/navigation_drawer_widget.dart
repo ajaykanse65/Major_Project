@@ -24,6 +24,7 @@ import 'package:bms/page/report.dart';
 import 'package:bms/page/task_manager.dart';
 import 'package:bms/page/utilization.dart';
 import 'package:bms/page/vendor.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../page/topup.dart';
@@ -36,12 +37,27 @@ class MultilevelDrawerWidget extends StatefulWidget {
 
 class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
   List data =[];
+  final _fireStore = FirebaseFirestore.instance;
+  String email = 'test@gmail.com';
+
 
   late SharedPreferences preferences;
   @override
   void initState(){
     super.initState();
-    sharedData();
+    // sharedData();
+    getdata();
+  }
+
+  getdata() async{
+    DocumentSnapshot test = await _fireStore.collection('testing').doc('5A2Zm570SeNCj5nZNiCP').get();
+    var test2 = test.get('menu') as List;
+    setState(() {
+      data = test2;
+    });
+
+      print(test.get('menu'));
+
   }
   void sharedData() async{
     preferences = await SharedPreferences.getInstance();
@@ -62,6 +78,9 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
         width: 200,
         child: Column(
             children:  [
+              // StreamBuilder(
+              //     builder:
+              // ),
               const DrawerHeader(
                 decoration:
                 BoxDecoration(
@@ -85,7 +104,7 @@ class _MultilevelDrawerWidgetState extends State<MultilevelDrawerWidget> {
                     return ListTile(
                       title: Text(menu,style:const TextStyle(fontWeight: FontWeight.bold),),
                       onTap: (){
-                        if(menu == 'View Network'){
+                        if(menu == 'network'){
                           Navigator.pop(context);
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const Network()));
                         }else if(menu == "Top-Up"){

@@ -41,7 +41,7 @@ class _NetworkState extends State<Network> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: const SearchBar(),
+      appBar: const SearchBar(titile: '',),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(

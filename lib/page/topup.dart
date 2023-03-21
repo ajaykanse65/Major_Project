@@ -22,7 +22,7 @@ class _topupState extends State<topup> {
     return Scaffold(
       extendBody: true,
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(

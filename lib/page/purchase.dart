@@ -17,7 +17,7 @@ class purchase extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Purchase",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: EdgeInsets.all(10.0),
         child: Column(

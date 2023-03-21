@@ -1,12 +1,13 @@
 import 'package:bms/pie_chart/piem_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
 class PieChartView extends StatelessWidget {
+  final String count;
   const PieChartView({
-    Key? key,
+    Key? key, required this.count
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -66,7 +67,7 @@ class PieChartView extends StatelessWidget {
                     ],
                   ),
                   child: Center(
-                    child: Text('850'),
+                    child: Text(count),
                   ),
                 ),
               ),

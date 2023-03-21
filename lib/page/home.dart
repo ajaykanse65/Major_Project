@@ -44,7 +44,7 @@ class _homeState extends State<home> {
       extendBody: true,
       drawer: MultilevelDrawerWidget(),
       bottomNavigationBar: DotBotoomBar(),
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       // body: SafeArea(
       //   child: SingleChildScrollView(
       //     child: Column(

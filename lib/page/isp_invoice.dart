@@ -23,7 +23,7 @@ class isp_invoice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.all(10.0),

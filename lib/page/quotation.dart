@@ -14,7 +14,7 @@ class quotation extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(onPressed: (){},label: Text("New Quatation",style: TextStyle(fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(

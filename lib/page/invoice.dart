@@ -20,7 +20,7 @@ class invoice extends StatelessWidget {
 
     return Scaffold(
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.all(10.0),

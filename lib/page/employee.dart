@@ -13,7 +13,7 @@ class emp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: EdgeInsets.all(10.0),
         child: Column(

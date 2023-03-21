@@ -1,7 +1,9 @@
-import 'dart:convert';
 
+
+import 'package:bms/authentication.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/headline_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,8 @@ class _new_userState extends State<new_user> {
   late String stateValue;
   late String cityValue;
   String document = 'Aadhar card';
+  
+  CollectionReference operator = FirebaseFirestore.instance.collection('operator');
   var documentitems = [
     'Customer App. Form',
     'Aadhar card',
@@ -34,7 +38,6 @@ class _new_userState extends State<new_user> {
   var itemsm = ['Facebook', 'Twitter', 'Instagram', 'Google', 'LinkedIN'];
   String dropdownvaluem = 'Facebook';
   final _form = GlobalKey<FormState>();
-  late String _selectedUserID;
   var shrtname = '';
   late SharedPreferences preferences;
   var test='';
@@ -122,7 +125,7 @@ class _new_userState extends State<new_user> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      appBar: const SearchBar(),
+      appBar:  SearchBar(titile: '',),
       body: Container(
         margin: const EdgeInsets.all(10.0),
         child: SingleChildScrollView(
@@ -252,9 +255,6 @@ class _new_userState extends State<new_user> {
                                 ),
                             ),
                           ),
-                          SizedBox(
-                              height: 10,),
-                        Text("UserID: ${shrtname}_${test}",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold), ),
                           const SizedBox(
                             height: 20,
                           ),
@@ -1650,7 +1650,8 @@ class _new_userState extends State<new_user> {
                       onPressed: () {
                         if (_form.currentState!.validate()) {
                           // use the information provided
-                          add();
+                          AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text);
+                          addOperator();
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -1673,6 +1674,46 @@ class _new_userState extends State<new_user> {
       ),
     );
   }
+
+  Future<void> addOperator(){
+    return operator
+        .add({
+      "utype": dropdownvalue,
+      'fname': fisrtnamecontroller.text,
+      'mname': middlenamecontroller.text,
+      'lname': lastnamecontroller.text,
+      'nation': nationalitycontroller.text,
+      'aadharadd': aadharaddcontroller.text,
+      'dist': distrctcontroller.text,
+      'taluka': talukacontroller.text,
+      'pincode': pincontroller.text,
+      'area': areatcontroller.text,
+      'land': landmarkctcontroller.text,
+      'lane': lanectcontroller.text,
+      'roomno': roomctcontroller.text,
+      'onu': onuctcontroller.text,
+      'mobileno': mobilecontroller.text,
+      'phone': phoenocontroller.text,
+      'email': emailcontroller.text,
+      'address': addresscontroller.text,
+      'pan': pancontroller.text,
+      'gstn': gstncontroller.text,
+      'billing': billingnamecontroller.text,
+      'help': helpcontroller.text,
+      'other': othercontroller.text,
+      'desc': desccontroller.text,
+      'amt': amtcontroller.text,
+      'totalamt': totalamtcontroller.text,
+      'documenttype': document,
+      'profiletypr': dropdownvaluem,
+      'profile': profilecontroller.text,
+      'country': countryValue,
+      'state': stateValue,
+      'city': cityValue,
+    });
+  }
+
+  
 
   Future<void> add() async {
     var res = await http

@@ -20,7 +20,7 @@ class _on_usersState extends State<on_users> {
   @override
   Widget build(BuildContext context) => Scaffold(
 
-        appBar: SearchBar(),
+        appBar: SearchBar(titile: '',),
         body: Container(
           margin: EdgeInsets.all(10.0),
           child: SingleChildScrollView(

@@ -12,7 +12,7 @@ class gst_report extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
 
-    appBar: SearchBar(),
+    appBar: SearchBar(titile: '',),
     body: Container(
       margin: EdgeInsets.all(10.0),
       child: Column(

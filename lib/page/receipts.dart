@@ -10,7 +10,7 @@ import 'home.dart';
 class receipts extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: SearchBar(),
+        appBar: SearchBar(titile: '',),
     floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: Text("New Receipt",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
         body: SingleChildScrollView(
           child: Container(

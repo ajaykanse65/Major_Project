@@ -22,7 +22,7 @@ class _new_saleState extends State<new_sale> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(backgroundColor:Theme.of(context).primaryColor,onPressed: (){},label: const Text("New Sales",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 17),),elevation: 15,),
 
-      appBar: const SearchBar(),
+      appBar: const SearchBar(titile: '',),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(10.0),

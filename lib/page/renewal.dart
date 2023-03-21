@@ -20,7 +20,7 @@ class _renewalState extends State<renewal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: EdgeInsets.all(10.0),
         child: SingleChildScrollView(

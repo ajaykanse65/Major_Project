@@ -25,7 +25,7 @@ class Product1 extends StatelessWidget {
         elevation: 15,
       ),
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: EdgeInsets.all(10.0),
         child: Column(

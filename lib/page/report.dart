@@ -37,7 +37,7 @@ class _reportState extends State<report> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         margin: const EdgeInsets.all(10.0),
         child: Column(

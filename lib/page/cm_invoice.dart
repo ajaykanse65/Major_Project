@@ -13,7 +13,7 @@ class cm_invoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: Container(
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.all(10.0),

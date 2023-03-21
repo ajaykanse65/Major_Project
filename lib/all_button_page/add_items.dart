@@ -25,7 +25,7 @@ class _AddItemsProductState extends State<AddItemsProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchBar(),
+      appBar: SearchBar(titile: '',),
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.all(10.0),
