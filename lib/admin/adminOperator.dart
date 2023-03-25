@@ -50,11 +50,13 @@ class _AdminOperatorState extends State<AdminOperator> {
       drawer: AdminDrawer(),
      appBar: SearchBar(titile: 'Operator'),
      body: SingleChildScrollView(
-       scrollDirection: Axis.horizontal,
-       child: Column(
-         children: [
-           table(context)
-         ],
+       child: SingleChildScrollView(
+         scrollDirection: Axis.horizontal,
+         child: Column(
+           children: [
+             table(context)
+           ],
+         ),
        ),
      ),
     );
@@ -90,7 +92,7 @@ class _AdminOperatorState extends State<AdminOperator> {
                   )),
               DataColumn(
                   label: Text(
-                    "Type",
+                    "F Name",
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -99,7 +101,7 @@ class _AdminOperatorState extends State<AdminOperator> {
                   )),
               DataColumn(
                   label: Text(
-                    "Name",
+                    "L Name",
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -165,13 +167,13 @@ class _AdminOperatorState extends State<AdminOperator> {
                   for (var i = 0; i < storedoc.length; i++)...[
               DataRow(cells: <DataCell>[
                 DataCell(Text("${i+1}")),
-                DataCell(Text(storedoc[i]['utype'])),
                 DataCell(Text(storedoc[i]['fname'])),
-                DataCell(Text(storedoc[i]['phone'])),
+                DataCell(Text(storedoc[i]['lname'])),
+                DataCell(Text(storedoc[i]['mobileno'])),
                 DataCell(Text(storedoc[i]['email'])),
                 DataCell(Text(storedoc[i]['billing'])),
                 DataCell(Text(storedoc[i]['city'])),
-                DataCell(Text(storedoc[i]['onu'])),
+                DataCell(Text(storedoc[i]['pan'])),
                 DataCell(Container(
                   child: Row(
                     children: [

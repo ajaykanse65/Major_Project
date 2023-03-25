@@ -1650,7 +1650,7 @@ class _new_userState extends State<new_user> {
                       onPressed: () {
                         if (_form.currentState!.validate()) {
                           // use the information provided
-                          AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text);
+                          AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text, role: '');
                           addOperator();
                         }
                       },

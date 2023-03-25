@@ -1,5 +1,7 @@
 
 
+import 'package:bms/admin/adminHome.dart';
+import 'package:bms/operator/operatorHome.dart';
 import 'package:bms/page/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,21 +13,25 @@ class AuthenticationHelper {
   final _fireStore = FirebaseFirestore.instance;
 
   //SIGN UP METHOD
-  Future signUp({required String email, required String password}) async {
+  Future signUp({required String email, required String password, required String role}) async {
     try {
       await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      _fireStore.collection('collectionPath').doc(user.uid).set({
+      _fireStore.collection('collectionPath').doc('loginDetails').set({
         'id' : user.uid,
-        'uname' : email
+        'uname' : email,
+        'role' : role
       });
       return null;
     } on FirebaseAuthException catch (e) {
       print( e.message);
     }
   }
+
+
+
 
   //SIGN IN METHOD
   Future<void> signIn({required String email, required String password}) async {
@@ -34,7 +40,7 @@ class AuthenticationHelper {
 
 
     } on FirebaseAuthException catch (e) {
-
+      print(e.message);
     }
   }
 

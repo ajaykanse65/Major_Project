@@ -29,16 +29,20 @@ class UserManagemnt{
     );
   }
 
+
+
   authorizeAccess(BuildContext context)async{
     DocumentSnapshot test = await FirebaseFirestore.instance.collection('collectionPath')
-        .doc(user.uid)
+        .doc(user!.uid)
         .get();
     var test2 = test.get('role') as String;
-    if(test2 == 'admin'){
+    var test3 = test.get('uname') as String;
+    print(test3.toString());
+    if(test2 == 'Admin'){
       // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminHome()));
-    }else if(test2 == 'operator'){
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OperatorHome()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>  AdminHome()));
+    }else if(test2 == 'Operator'){
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>  OperatorHome()));
     }
 
   }

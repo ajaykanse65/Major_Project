@@ -17,7 +17,10 @@ class AdminDrawer extends StatefulWidget {
 class _AdminDrawerState extends State<AdminDrawer> {
   String uname ='';
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   get user => _auth.currentUser;
+
+
 
   @override
   void initState() {
@@ -64,14 +67,20 @@ class _AdminDrawerState extends State<AdminDrawer> {
     );
   }
 
+
    getData()async{
-    DocumentSnapshot data = await FirebaseFirestore.instance.collection('collectionPath')
-        .doc(user.uid)
-        .get();
-    var dataemail = data.get('uname') as String;
+    var email = await _auth.currentUser!.email.toString();
     setState(() {
-      uname = dataemail;
+      uname = email;
     });
+    print(email);
+    // DocumentSnapshot data = await FirebaseFirestore.instance.collection('collectionPath')
+    //     .doc(user.uid)
+    //     .get();
+    // var dataemail = data.get('uname') as String;
+    // setState(() {
+    //   uname = dataemail;
+    // });
 
         
   }

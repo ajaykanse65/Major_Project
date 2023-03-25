@@ -1,5 +1,7 @@
 import 'package:bms/Utils/app_color.dart';
+import 'package:bms/admin/adminHome.dart';
 import 'package:bms/authentication.dart';
+import 'package:bms/operator/operatorHome.dart';
 import 'package:bms/page/home.dart';
 import 'package:bms/service/usermanagement.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +30,8 @@ class _LoginPageState extends State<LoginPage2> {
   String hintText2 = 'Password';
 
 
-  final _fireStore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance.currentUser;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user => _auth.currentUser;
 
 
   StateMachineController? controller;
@@ -71,6 +73,9 @@ class _LoginPageState extends State<LoginPage2> {
   }
 
   bool _isHidden = true;
+  String dropdownvalue = 'Admin';
+  var items = ['Admin', 'Operator'];
+
 
   void _toggleVisibility() {
     setState(() {
@@ -78,6 +83,7 @@ class _LoginPageState extends State<LoginPage2> {
     });
   }
   final _formkey = GlobalKey<FormState>();
+  final Stream<QuerySnapshot> userStream = FirebaseFirestore.instance.collection('collectionPath').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +98,7 @@ class _LoginPageState extends State<LoginPage2> {
             child: Center(
               child: Column(
                 children:  [
-                  const SizedBox(height: 32,),
+                  const SizedBox(height: 20,),
                   Text("Welcome",
                     style: Theme.of(context).textTheme.displaySmall,
                     textAlign: TextAlign.center,
@@ -111,7 +117,7 @@ class _LoginPageState extends State<LoginPage2> {
                   // buildButtonContainer(),
                   // const SizedBox(height: 20,),
                   // buildButton(),
-                  SizedBox(height: 300,width: 300,
+                  SizedBox(height: 280,width: 300,
                     child: RiveAnimation.asset("assets/animated-login-screen.riv",
                       fit: BoxFit.fitHeight,
                       onInit: (artboard){
@@ -185,7 +191,40 @@ class _LoginPageState extends State<LoginPage2> {
                               onChanged: (value){},
                             ),
                           ),
-                          const SizedBox(height: 32,),
+                          SizedBox(height: 8,),
+                          // Container(
+                          //   height: 32,
+                          //   width: 120,
+                          //   decoration:  BoxDecoration(
+                          //     color: Colors.grey[200],
+                          //       borderRadius: BorderRadius.circular(8)
+                          //   ),
+                          //   child: DropdownButton(
+                          //     dropdownColor: Colors.grey[200],
+                          //     value: dropdownvalue,
+                          //     icon: const Icon(
+                          //       Icons.arrow_drop_down,
+                          //       color: Colors.black, // <-- SEE HERE
+                          //     ),
+                          //     items: items.map((String items) {
+                          //       return DropdownMenuItem(
+                          //         value: items,
+                          //         child: Padding(
+                          //           padding: const EdgeInsets.only(left: 10),
+                          //           child: Text(items,style: TextStyle(
+                          //               color: Colors.black
+                          //           ),),
+                          //         ),
+                          //       );
+                          //     }).toList(),
+                          //     onChanged: (String? newValue) {
+                          //       setState(() {
+                          //         dropdownvalue = newValue!;
+                          //       });
+                          //     },
+                          //   ),
+                          // ),
+                          const SizedBox(height: 20,),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
                             height: 64,
@@ -202,8 +241,10 @@ class _LoginPageState extends State<LoginPage2> {
                                 await Future.delayed(const Duration(milliseconds:2000 ));
 
                                 if(mounted) Navigator.pop(context);
-                                testSign(email: userController.text, password: passwordController.text);
-
+                                AuthenticationHelper().signIn(email: userController.text, password: passwordController.text);
+                                await Future.delayed(const Duration(milliseconds:2500 ));
+                                UserManagemnt().authorizeAccess(context);
+                                // signInUser(context);
                               },
                               child: const Text("Login",
                                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
@@ -221,8 +262,26 @@ class _LoginPageState extends State<LoginPage2> {
         ),
       ),
     );
+  }
 
 
+
+  void signInUser (context) async{
+      await FirebaseFirestore.instance.collection('collectionPath').doc('jUc1NdCqM3ZNZAQxFtUKj5WLWur1').snapshots().forEach((element) {
+        if(element.data()?['uname'] == userController.text && element.data()?['pass'] == passwordController.text && element.data()?['role'] == dropdownvalue){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AdminHome()));
+        }else if(element.data()?['uname'] == userController.text && element.data()?['pass'] == passwordController.text&& element.data()?['role'] == dropdownvalue){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const OperatorHome()));
+        }
+      }).catchError((e){
+      Navigator.pop(context);
+      showDialog(context: context, builder: (context){
+        return AlertDialog(
+          title: Text('Error Message'),
+          content: Text(e.message.toString()),
+        );
+      });
+    });
   }
 
 
@@ -232,9 +291,11 @@ class _LoginPageState extends State<LoginPage2> {
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
         UserManagemnt().authorizeAccess(context);
       } on FirebaseAuthException catch (e){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()))
+        AlertDialog alertDialog = AlertDialog(
+          title: Text('Erroe Message'),
+          content: Text(e.message.toString()),
         );
+        print(e.code);
       }
     }
   }
