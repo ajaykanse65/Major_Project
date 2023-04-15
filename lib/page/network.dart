@@ -66,12 +66,9 @@ class _NetworkState extends State<Network> {
   DataTable networkTable() {
     
     return DataTable(
-      border: TableBorder.all(),
+      border: TableBorder.all(width: 1, style: BorderStyle.solid),
       columns: _networkColumn(),
       rows: _networkRow(),
-      dividerThickness: 5,
-      dataRowHeight: 80,
-      showBottomBorder: true,
       headingTextStyle:
           const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       headingRowColor:

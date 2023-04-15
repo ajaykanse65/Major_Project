@@ -27,7 +27,16 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
 
     return AppBar(
-      title: Text(widget.titile),
+      leading: null,
+      automaticallyImplyLeading: false,
+      centerTitle: false,
+      titleSpacing: 0.0,
+      title:  Transform(
+        transform:  Matrix4.translationValues(10.0, 0.0, 0.0),
+        child: Text(widget.titile
+
+        ),
+      ),
       iconTheme: const IconThemeData(color: Colors.black),
       actions: <Widget>[
         // IconButton(
@@ -78,7 +87,6 @@ class _SearchBarState extends State<SearchBar> {
           icon: Icon(Icons.logout),
         ),
       ],
-      centerTitle: true,
       backgroundColor: Color(0xFF778ba3),
     );
   }

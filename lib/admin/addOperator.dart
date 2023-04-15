@@ -1,12 +1,19 @@
 
+import 'dart:io';
 
+import 'package:bms/admin/adminHome.dart';
+import 'package:bms/admin/adminNetwrok.dart';
+import 'package:bms/admin/adminOperator.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
 import 'package:bms/authentication.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/file_picker_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,7 +24,8 @@ class AddOperator extends StatefulWidget {
   State<AddOperator> createState() => _AddOperatorState();
 }
 
-class _AddOperatorState extends State<AddOperator> {
+class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStateMixin{
+
   bool isVisible = false;
   bool isVisible1 = false;
   bool isVisible2 = false;
@@ -56,8 +64,12 @@ class _AddOperatorState extends State<AddOperator> {
   var gstncontroller = TextEditingController();
   var billingnamecontroller = TextEditingController();
   final _form = GlobalKey<FormState>();
+
   CollectionReference operator = FirebaseFirestore.instance.collection('operator');
   CollectionReference signup = FirebaseFirestore.instance.collection('collectionPath');
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+  var downlaodTask;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -993,8 +1005,22 @@ class _AddOperatorState extends State<AddOperator> {
                                       height: 10,
                                     ),
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const FilePickerWidget(),
+                                        ElevatedButton(onPressed: (){
+                                          selectFile();
+                                        }, child: const Text('Choose File',textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17,
+                                          ),)),
+                                        ElevatedButton(onPressed: (){
+                                          uploadFile();
+                                        }, child: const Text('Upload File',textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17,
+                                          ),)),
                                       ],
                                     ),
                                   ],
@@ -1012,10 +1038,10 @@ class _AddOperatorState extends State<AddOperator> {
                       IconButton(onPressed: (){
                         if (_form.currentState!.validate()) {
                           // use the information provided
-                          createUser();
-                          signUP();
+                          // createUser();
+                          AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text, role: dropdownvalue);
                           addOperator();
-                          test();
+                          // test();
                         }
                       }, icon: Icon(Icons.done)),
                       IconButton(onPressed: (){}, icon: Icon(Icons.done)),
@@ -1032,14 +1058,30 @@ class _AddOperatorState extends State<AddOperator> {
     );
   }
 
-  Future<void> test()async{
-    try {
-      final user = FirebaseAuth.instance.currentUser!;
-      await user.sendEmailVerification();
-    } catch (e){
-      print(e.toString());
-    }
+
+Future uploadFile() async{
+final path = 'files/${pickedFile!.name}';
+final file = File(pickedFile!.path!);
+
+var ref = FirebaseStorage.instance.ref().child(path);
+uploadTask = ref.putFile(file);
+final snapshot = await uploadTask!.whenComplete(() {});
+
+final downloadurl = await snapshot.ref.getDownloadURL();
+setState(() {
+  downlaodTask = downloadurl.toString();
+});
+print(downlaodTask);
+
+}
+  Future selectFile()async{
+ final file = await FilePicker.platform.pickFiles();
+ if(file == null) return;
+ setState(() {
+   pickedFile  = file.files.first;
+ });
   }
+
   Future<void> createUser() async{
     var acs = ActionCodeSettings(
       // URL you want to redirect back to. The domain (www.example.com) for this
@@ -1091,6 +1133,7 @@ class _AddOperatorState extends State<AddOperator> {
       'billing': billingnamecontroller.text,
       'aadharadd': aadharaddcontroller.text,
       'documenttype': document,
+      'documenturl': downlaodTask
     });
   }
 }

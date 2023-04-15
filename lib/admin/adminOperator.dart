@@ -1,7 +1,8 @@
-
-
 import 'package:bms/admin/addOperator.dart';
+import 'package:bms/admin/adminHome.dart';
+import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
+import 'package:bms/admin/model/plandetails.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -14,53 +15,129 @@ class AdminOperator extends StatefulWidget {
   State<AdminOperator> createState() => _AdminOperatorState();
 }
 
-class _AdminOperatorState extends State<AdminOperator> {
+class _AdminOperatorState extends State<AdminOperator> with SingleTickerProviderStateMixin {
 
   final Stream<QuerySnapshot> userStream = FirebaseFirestore.instance.collection('operator').snapshots();
-  String productname ='', pname = '', gst = '', hsn = '', purchase = '', sale = '', opening = '';
+  Animation<double>? _animation;
+  AnimationController? _animationController;
+  String name= '';
+
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    final curvedAnimation =
+    CurvedAnimation(curve: Curves.easeInOut, parent: _animationController!);
+    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+    _searchController.addListener(_onSearchChanged);
+    super.initState();
+  }
+
+  _onSearchChanged(){
+    print(_searchController.toString());
+  }
+
+  @override
+  void dispose(){
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  String dropdownvalue = 'Admin';
+  var items = ['Admin', 'Operator'];
+
+  List operator = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  Future<void> operatorList() async{
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(193, 214, 223, 1),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> AddOperator()));
-        },
-        elevation: 0,
-        child: Container(
-          height: 70,
-          width: 70,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                spreadRadius: 5,
-                blurRadius: 4,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Icon(Icons.add),
-        ),
-        backgroundColor: Color(0xFF607894),
-        foregroundColor: Colors.black,
+      floatingActionButton: FloatingActionBubble(
+        items: <Bubble>[
+          Bubble(
+              icon: Icons.home,
+              iconColor: Colors.black,
+              title: 'DashBoard',
+              titleStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor:   const Color.fromRGBO(82, 98, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminHome()));
+              }),
+          Bubble(
+              icon: Icons.network_check,
+              iconColor: Colors.black,
+              title: 'Network',
+              titleStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor: const Color.fromRGBO(46, 198, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminNetwork()));
+              }),
+          Bubble(
+              icon: Icons.add_circle_outlined,
+              iconColor: Colors.black,
+              title: 'New Operator',
+              titleStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor: const Color.fromRGBO(46, 198, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>  AddOperator()));
+              }),
+        ],
+
+        animation: _animation!,
+        onPress: () => _animationController!.isCompleted
+            ? _animationController!.reverse()
+            : _animationController!.forward(),
+        backGroundColor: Theme.of(context).primaryColor,
+        iconColor: Colors.white,
+        iconData: Icons.menu,
       ),
-      drawer: AdminDrawer(),
-     appBar: SearchBar(titile: 'Operator'),
+      backgroundColor: const Color.fromRGBO(193, 214, 223, 1),
+      drawer: const AdminDrawer(),
+     appBar: const SearchBar(titile: 'Operator'),
      body: SingleChildScrollView(
-       child: SingleChildScrollView(
-         scrollDirection: Axis.horizontal,
+       child: Padding(
+         padding: const EdgeInsets.all(10),
          child: Column(
-           children: [
-             table(context)
-           ],
-         ),
+               children: [
+                 TextField(
+                   controller: _searchController,
+                   decoration: const InputDecoration(
+                   prefixIcon: Icon(Icons.search),
+                   hintText: 'Search...'
+                   ),
+                   onChanged: (val){
+                     setState(() {
+                       name= val;
+                     });
+                   },
+                 ),
+                 table(context),
+               ],
+             ),
        ),
      ),
     );
   }
+
+  Widget test(BuildContext context){
+    return AlertDialog(
+      content: ClipRRect(
+        child: Image.network("https://firebasestorage.googleapis.com/v0/b/majorproject-3dbfa.appspot.com/o/files%2FIMG_20230415_125124.jpg?alt=media&token=0df2fab2-d59f-4fd2-85ca-de4318617efa",fit: BoxFit.fill,),
+      ),
+    );
+  }
+
 
   Widget table(BuildContext context){
     return StreamBuilder<QuerySnapshot>(stream: userStream,
@@ -68,133 +145,53 @@ class _AdminOperatorState extends State<AdminOperator> {
           if(snapshot.hasError){
             print('object');
           }if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator(),);
+            return const Center(child: CircularProgressIndicator(),);
           }
           final List storedoc= [];
+
           snapshot.data!.docs.map((DocumentSnapshot document) {
             Map a = document.data()as Map<String, dynamic>;
             storedoc.add(a);
           }).toList();
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(),
-            ),
-            child:
-            DataTable(columnSpacing: 12, horizontalMargin: 12, columns: [
-              DataColumn(
-                  label: Text(
-                    "Cr No.",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+          return
+            Column(
+              children: [
+                for (var i = 0; i < storedoc.length; i++)...[
+                  SizedBox(
+                    child: Card(
+                      color: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child:ListTile(title: Text("${storedoc[i]['fname']} ${storedoc[i]['lname']}")),
+
                     ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "F Name",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "L Name",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "Mobile No",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "Email Id",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "Billing Name",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "City",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "Status",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-              DataColumn(
-                  label: Text(
-                    "Action",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )),
-            ],
-                rows: <DataRow>[
-                  for (var i = 0; i < storedoc.length; i++)...[
-              DataRow(cells: <DataCell>[
-                DataCell(Text("${i+1}")),
-                DataCell(Text(storedoc[i]['fname'])),
-                DataCell(Text(storedoc[i]['lname'])),
-                DataCell(Text(storedoc[i]['mobileno'])),
-                DataCell(Text(storedoc[i]['email'])),
-                DataCell(Text(storedoc[i]['billing'])),
-                DataCell(Text(storedoc[i]['city'])),
-                DataCell(Text(storedoc[i]['pan'])),
-                DataCell(Container(
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                          },
-                          icon: Icon(Icons.print, color: Colors.black)),
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.edit, color: Colors.green)),
-                      IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.delete, color: Colors.red)),
-                    ],
                   ),
-                )
-          ),
-              ]),
-            ]],
-            ),
-          );
+                ],
+
+              ],
+            );
         });
+  }
+
+  Widget dropdown(){
+    return DropdownButton(
+      value: dropdownvalue,
+      icon: const Icon(Icons.keyboard_arrow_down),
+      items: items.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(items),
+          ),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          dropdownvalue = newValue!;
+        });
+      },
+    );
   }
 }

@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:bms/Utils/app_color.dart';
 import 'package:bms/admin/adminHome.dart';
 import 'package:bms/authentication.dart';
+import 'package:bms/main.dart';
 import 'package:bms/operator/operatorHome.dart';
 import 'package:bms/page/home.dart';
+import 'package:http/http.dart' as http;
 import 'package:bms/service/usermanagement.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rive/rive.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +29,10 @@ class LoginPage2 extends StatefulWidget {
 class _LoginPageState extends State<LoginPage2> {
   var userController = TextEditingController();
   var passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController contactController = TextEditingController();
+  TextEditingController idEmailController = TextEditingController();
   FocusNode userFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
   bool loading =  false;
@@ -83,7 +93,21 @@ class _LoginPageState extends State<LoginPage2> {
     });
   }
   final _formkey = GlobalKey<FormState>();
+  final _OPformkey = GlobalKey<FormState>();
   final Stream<QuerySnapshot> userStream = FirebaseFirestore.instance.collection('collectionPath').snapshots();
+  CollectionReference opResponse = FirebaseFirestore.instance.collection('opResponse');
+
+  void showNotification() {
+    flutterLocalNotificationsPlugin.show(0, 'Test', 'Its Done', NotificationDetails(
+        android: AndroidNotificationDetails(
+            channel.id, channel.name, channel.description,
+            playSound: true,
+            color: Colors.blue,
+            icon: '@mipmap/ic_launcher',
+            importance: Importance.high
+        )
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,21 +127,7 @@ class _LoginPageState extends State<LoginPage2> {
                     style: Theme.of(context).textTheme.displaySmall,
                     textAlign: TextAlign.center,
                   ),
-                  // const SizedBox(height: 100,),
-                  // const Text('Bits \nManagement \nSystem',style: TextStyle(shadows: [
-                  //   Shadow(
-                  //     blurRadius:10.0,
-                  //     color: Colors.white,
-                  //     offset: Offset(2.5,2.5),
-                  //   ),
-                  // ], color: Colors.black,fontSize: 45,fontWeight: FontWeight.bold,fontFamily: "Ubuntu" ),),
-                  // const SizedBox(height: 50,),
-                  // buildTextField('User Name','Password'),
-                  // const SizedBox(height: 20,),
-                  // buildButtonContainer(),
-                  // const SizedBox(height: 20,),
-                  // buildButton(),
-                  SizedBox(height: 280,width: 300,
+                  SizedBox(height: 250,width: 300,
                     child: RiveAnimation.asset("assets/animated-login-screen.riv",
                       fit: BoxFit.fitHeight,
                       onInit: (artboard){
@@ -145,17 +155,27 @@ class _LoginPageState extends State<LoginPage2> {
                           color: AppColor.white,
                           borderRadius: BorderRadius.circular(16)
                       ),
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(8)
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Please enter your email address';
+                                }
+                                // Check if the entered email has the right format
+                                if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                  return 'Please enter a valid email address';
+                                }
+                                // Return null if the entered email is valid
+                                return null;
+                              },
                               focusNode: userFocusNode,
                               controller: userController,
                               decoration: const InputDecoration(
@@ -165,19 +185,26 @@ class _LoginPageState extends State<LoginPage2> {
                                   hintStyle: TextStyle(color: Colors.black)
                               ),
                               style: Theme.of(context).textTheme.bodyMedium,
-                              onChanged: (value){
-                                numLook?.change(value.length.toDouble());
-                              },
                             ),
                           ),
-                          SizedBox(height: 8,),
+                          const SizedBox(height: 8,),
                           Container(
                             decoration: BoxDecoration(
                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(8)
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                             child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'This field is required';
+                                }
+                                if (value.trim().length < 6) {
+                                  return 'Password must be at least 6 characters in length';
+                                }
+                                // Return null if the entered username is valid
+                                return null;
+                              },
                               focusNode: passwordFocusNode,
                               controller: passwordController,
                               decoration:  const InputDecoration(
@@ -188,46 +215,13 @@ class _LoginPageState extends State<LoginPage2> {
                               ),
                               obscureText: true,
                               style: Theme.of(context).textTheme.bodyMedium,
-                              onChanged: (value){},
                             ),
                           ),
-                          SizedBox(height: 8,),
-                          // Container(
-                          //   height: 32,
-                          //   width: 120,
-                          //   decoration:  BoxDecoration(
-                          //     color: Colors.grey[200],
-                          //       borderRadius: BorderRadius.circular(8)
-                          //   ),
-                          //   child: DropdownButton(
-                          //     dropdownColor: Colors.grey[200],
-                          //     value: dropdownvalue,
-                          //     icon: const Icon(
-                          //       Icons.arrow_drop_down,
-                          //       color: Colors.black, // <-- SEE HERE
-                          //     ),
-                          //     items: items.map((String items) {
-                          //       return DropdownMenuItem(
-                          //         value: items,
-                          //         child: Padding(
-                          //           padding: const EdgeInsets.only(left: 10),
-                          //           child: Text(items,style: TextStyle(
-                          //               color: Colors.black
-                          //           ),),
-                          //         ),
-                          //       );
-                          //     }).toList(),
-                          //     onChanged: (String? newValue) {
-                          //       setState(() {
-                          //         dropdownvalue = newValue!;
-                          //       });
-                          //     },
-                          //   ),
-                          // ),
-                          const SizedBox(height: 20,),
+                          const SizedBox(height: 8,),
+                          const SizedBox(height: 10,),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: 64,
+                            height: 50,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
@@ -237,24 +231,51 @@ class _LoginPageState extends State<LoginPage2> {
                               onPressed: () async{
                                 userFocusNode.unfocus();
                                 passwordFocusNode.unfocus();
-                                showLoadingDialog(context);
-                                await Future.delayed(const Duration(milliseconds:2000 ));
+                                final bool? isValid = _formkey.currentState?.validate();
+                                if(isValid == true){
+                                  showLoadingDialog(context);
 
-                                if(mounted) Navigator.pop(context);
-                                AuthenticationHelper().signIn(email: userController.text, password: passwordController.text);
-                                await Future.delayed(const Duration(milliseconds:2500 ));
-                                UserManagemnt().authorizeAccess(context);
+                                  await Future.delayed(const Duration(milliseconds:2000 ));
+
+                                  if(mounted) Navigator.pop(context);
+                                  AuthenticationHelper().signIn(email: userController.text, password: passwordController.text, context: context);
+
+                                }
+                                // await Future.delayed(const Duration(milliseconds:3500 ));
+                                // UserManagemnt().authorizeAccess(context);
                                 // signInUser(context);
                               },
                               child: const Text("Login",
                                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.hovered))
+                            return Colors.blue.withOpacity(0.04);
+                          if (states.contains(MaterialState.focused) ||
+                              states.contains(MaterialState.pressed))
+                            return Colors.blue.withOpacity(0.12);
+                          return null; // Defer to the widget's default.
+                        },
+                      ),
+                    ),
+                    onPressed: (){
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => _buildPopupDialog(context),
+                      );
+                    },
+                    child: const Text("Want to join as a Operator ? Click Here..!"),
+                  ),
                 ],
               ),
             ),
@@ -262,6 +283,198 @@ class _LoginPageState extends State<LoginPage2> {
         ),
       ),
     );
+  }
+
+  Widget _buildPopupDialog(BuildContext context){
+   return AlertDialog(
+     content: SingleChildScrollView(
+       child: Stack(
+         clipBehavior: Clip.none, children: <Widget>[
+           Positioned(
+             right: -40.0,
+             top: -40.0,
+             child: InkResponse(
+               onTap: () {
+                 Navigator.of(context).pop();
+               },
+               child: const CircleAvatar(
+                 backgroundColor: Color(0xFF11253d),
+                 child:Icon(Icons.close),
+               ),
+             ),
+           ),
+           Form(
+             key: _OPformkey,
+             child: Column(
+               mainAxisSize: MainAxisSize.min,
+               children: <Widget>[
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: Colors.grey[200],
+                         borderRadius: BorderRadius.circular(8)
+                     ),
+                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                     child: TextFormField(
+                       validator: (value) {
+                         if (value!.isEmpty) {
+                           return 'Enter a Full Name!';
+                         }
+                         return null;
+                       },
+                       controller: nameController,
+                       decoration:  const InputDecoration(
+                         border: InputBorder.none,
+                         hintText: "Full Name",
+                         hintStyle: TextStyle(color: Colors.black),
+                         prefixIcon: Icon(Icons.person,color: Colors.black,),
+                       ),
+                       style:const TextStyle(color: Colors.black,fontSize: 14),
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: Colors.grey[200],
+                         borderRadius: BorderRadius.circular(8)
+                     ),
+                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                     child: TextFormField(
+                       validator: (value) {
+                         if (value!.isEmpty) {
+                           return 'Enter Area Name!';
+                         }
+                         return null;
+                       },
+                       controller: locationController,
+                       decoration:  const InputDecoration(
+                         border: InputBorder.none,
+                         hintText: "Area Name",
+                         hintStyle: TextStyle(color: Colors.black),
+                         prefixIcon: Icon(Icons.location_on,color: Colors.black,),
+                       ),
+                       style:const TextStyle(color: Colors.black,fontSize: 14),
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: Colors.grey[200],
+                         borderRadius: BorderRadius.circular(8)
+                     ),
+                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                     child: TextFormField(
+                       validator: (value) {
+                         if (value!.isEmpty) {
+                           return 'Enter a valid Contact no!';
+                         }
+                         return null;
+                       },
+                       controller: contactController,
+                       decoration:  const InputDecoration(
+                         border: InputBorder.none,
+                         hintText: "Contact No.",
+                         hintStyle: TextStyle(color: Colors.black),
+                         prefixIcon: Icon(Icons.call,color: Colors.black,),
+                       ),
+                       style:const TextStyle(color: Colors.black,fontSize: 14),
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: Container(
+                     decoration: BoxDecoration(
+                         color: Colors.grey[200],
+                         borderRadius: BorderRadius.circular(8)
+                     ),
+                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                     child: TextFormField(
+                       validator: (value) {
+                         if (value == null || value.trim().isEmpty) {
+                           return 'Please enter your email address';
+                         }
+                         // Check if the entered email has the right format
+                         if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                           return 'Please enter a valid email address';
+                         }
+                         // Return null if the entered email is valid
+                         return null;
+                       },
+                       controller: idEmailController,
+                       decoration:  const InputDecoration(
+                         border: InputBorder.none,
+                         hintText: "Email Id",
+                         hintStyle: TextStyle(color: Colors.black),
+                         prefixIcon: Icon(Icons.email,color: Colors.black,),
+                       ),
+                       style:const TextStyle(color: Colors.black,fontSize: 14),
+                     ),
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: ElevatedButton(
+                     style: ElevatedButton.styleFrom(
+                       shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(16)
+                       ),
+                     ),
+                     onPressed: () async{
+                       if (_OPformkey.currentState!.validate()) {
+                         // showNotification();
+                         sendEmail();
+                         send();
+                       }
+                       Navigator.pop(context);
+                     },
+                     child: const Text("Submit",
+                       style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+                     ),
+                   )
+                 )
+               ],
+             ),
+           ),
+         ],
+       ),
+     ),
+   );
+  }
+  Future sendEmail() async{
+    final uri = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+    const serviceId = "service_hi9ygcc";
+    const templateId = "template_ufkk9mr";
+    const userId = "_tWWKkHCqnW_moGJy";
+    final res = await http.post(uri,
+        headers: {'Content-Type': 'application/json','origin': 'http://localhost'},
+        body: json.encode({
+          "service_id": serviceId,
+          "template_id" : templateId,
+          "user_id" : userId,
+          "template_params" : {
+            "name": nameController.text,
+            "subject" : "New Operator Request",
+            "message": "I want to know about Operator Registration,here is my location ${locationController.text} and this is my contact no ${contactController.text} ",
+            "user_email" : idEmailController.text
+          }
+        })
+    );print(res.statusCode);
+
+    return res.statusCode;
+  }
+
+  Future<void> send() {
+    return opResponse.add({
+      'fname' : nameController.text,
+      'areaname' : locationController.text,
+      'contactno' : contactController.text
+    });
   }
 
 
@@ -275,12 +488,8 @@ class _LoginPageState extends State<LoginPage2> {
         }
       }).catchError((e){
       Navigator.pop(context);
-      showDialog(context: context, builder: (context){
-        return AlertDialog(
-          title: Text('Error Message'),
-          content: Text(e.message.toString()),
-        );
-      });
+        return ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+
     });
   }
 
@@ -292,109 +501,11 @@ class _LoginPageState extends State<LoginPage2> {
         UserManagemnt().authorizeAccess(context);
       } on FirebaseAuthException catch (e){
         AlertDialog alertDialog = AlertDialog(
-          title: Text('Erroe Message'),
+          title: const Text('Erroe Message'),
           content: Text(e.message.toString()),
         );
         print(e.code);
       }
     }
   }
-
-
-
-
-// Widget buildTextField(String hintText1, hintText2)  {
-//   return Padding(
-//     padding: const EdgeInsets.only(left: 25,right: 25),
-//     child: Column(
-//       children: [
-//         TextFormField(
-//           controller: userController,
-//           decoration: InputDecoration(
-//             hintText: hintText1,
-//             hintStyle: const TextStyle(
-//               color: Colors.black,
-//               fontSize: 16.0,
-//             ),
-//             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-//             prefixIcon:const Icon(Icons.verified_user)
-//                 // : const Icon(Icons.lock),
-//           ),
-//         ),
-//         const SizedBox(height: 25,),
-//         TextFormField(
-//           controller: passwordController,
-//           decoration: InputDecoration(
-//             hintText: hintText2,
-//             hintStyle: const TextStyle(
-//               color: Colors.black,
-//               fontSize: 16.0,
-//             ),
-//             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-//             prefixIcon: const Icon(Icons.lock),
-//             suffixIcon: hintText2 == 'Password'
-//               ? IconButton(onPressed: _toggleVisibility, icon: _isHidden
-//                 ? const Icon(Icons.visibility_off)
-//               : const Icon(Icons.visibility)
-//             )
-//             : null
-//           ),
-//           obscureText: hintText2 == "Password" ? _isHidden : false,
-//         ),
-//         // const SizedBox(height: 25,),
-//         // TextFormField( // Comment this code after login
-//         //     keyboardType: TextInputType.number,
-//         //     inputFormatters: <TextInputFormatter>[
-//         //       FilteringTextInputFormatter.digitsOnly
-//         //     ],
-//         //   controller: mnoController,
-//         //   decoration: InputDecoration(
-//         //       hintText: hintText3,
-//         //       hintStyle: const TextStyle(
-//         //         color: Colors.black,
-//         //         fontSize: 16.0,
-//         //       ),
-//         //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-//         //       prefixIcon: const Icon(Icons.lock),)
-//         //   ), // Comment this code after login
-//       ],
-//     ),
-//   );
-// }
-
-// Widget buildButtonContainer() {
-//   return CustomButtonWidget(
-//       title: const Text(
-//         "LOGIN",
-//         style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
-//       ),
-//       onPressed: () async {
-//         if (loading) return;
-//         setState(() => loading = true);
-//         await Future.delayed(const Duration(seconds: 1));
-//         login();
-//         setState(() => loading = false);
-//       },
-//       dimensionheight: 35,
-//       dimensionwidth: 100);
-// }
-//
-// Widget buildButton() {
-//   return Container(
-//     alignment: Alignment.bottomRight,
-//     child: TextButton(
-//       onPressed: () {
-//         Navigator.push(
-//             context, MaterialPageRoute(builder: (context) => password()));
-//       },
-//       child: const Text(
-//         "Update Password",
-//         style: TextStyle(
-//             color: Colors.black,
-//             fontSize: 20.0,
-//             fontWeight: FontWeight.bold),
-//       ),
-//     ),
-//   );
-// }
 }

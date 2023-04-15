@@ -1,6 +1,10 @@
 
+import 'package:bms/admin/adminNetwrok.dart';
+import 'package:bms/admin/adminOperator.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:bms/pie_chart/categories_row.dart';
 import 'package:bms/pie_chart/pie_chart_view.dart';
@@ -17,18 +21,85 @@ class AdminHome extends StatefulWidget {
   State<AdminHome> createState() => _AdminHomeState();
 }
 
-class _AdminHomeState extends State<AdminHome> {
+class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMixin {
+  bool isEmailVerified = false;
+  Animation<double>? _animation;
+  AnimationController? _animationController;
   @override
   void initState() {
+    isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+    if(!isEmailVerified){
+      sendVerificationEmail();
+    }
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+
+    final curvedAnimation =
+    CurvedAnimation(curve: Curves.easeInOut, parent: _animationController!);
+    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+
     getData();
     super.initState();
+  }
+
+  Future sendVerificationEmail() async{
+    try{
+      final user = FirebaseAuth.instance.currentUser!;
+      await user.sendEmailVerification();
+    } catch (e){
+      print(e.toString());
+    }
   }
   String count ='';
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      drawer: AdminDrawer(),
+      floatingActionButton: FloatingActionBubble(
+        items: <Bubble>[
+          Bubble(
+              icon: Icons.home,
+              iconColor: Colors.black,
+              title: 'DashBoard',
+              titleStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor:   Color.fromRGBO(82, 98, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminHome()));
+              }),
+          Bubble(
+              icon: Icons.person,
+              iconColor: Colors.black,
+              title: 'Operator',
+              titleStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor: Color.fromRGBO(255, 171, 67, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminOperator()));
+              }),
+          Bubble(
+              icon: Icons.network_check,
+              iconColor: Colors.black,
+              title: 'Network',
+              titleStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor: Color.fromRGBO(46, 198, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminNetwork()));
+              }),
+        ],
+
+        animation: _animation!,
+        onPress: () => _animationController!.isCompleted
+            ? _animationController!.reverse()
+            : _animationController!.forward(),
+        backGroundColor: Theme.of(context).primaryColor,
+        iconColor: Colors.white,
+        iconData: Icons.menu,
+      ),
       backgroundColor: Color.fromRGBO(193, 214, 223, 1),
       extendBody: true,
       // bottomNavigationBar: DotBotoomBar(),

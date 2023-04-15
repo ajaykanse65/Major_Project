@@ -1,7 +1,6 @@
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../widget/custom_button_widget.dart';
 import '../widget/custom_search_widget.dart';
 import '../widget/headline_widget.dart';
