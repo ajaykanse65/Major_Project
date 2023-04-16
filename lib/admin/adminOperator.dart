@@ -2,7 +2,6 @@ import 'package:bms/admin/addOperator.dart';
 import 'package:bms/admin/adminHome.dart';
 import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
-import 'package:bms/admin/model/plandetails.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -37,7 +36,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   }
 
   _onSearchChanged(){
-    print(_searchController.toString());
+
   }
 
   @override
@@ -47,10 +46,10 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
     super.dispose();
   }
 
-  String dropdownvalue = 'Admin';
-  var items = ['Admin', 'Operator'];
 
-  List operator = [];
+  String dropdownvaluetest = 'All';
+  var itemstest = ['All','Approved','Pending','Rejected','Active','Deactivate',];
+
   final TextEditingController _searchController = TextEditingController();
 
   Future<void> operatorList() async{
@@ -90,7 +89,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
               bubbleColor: const Color.fromRGBO(46, 198, 255, 1),
               onPress: () {
                 _animationController!.reverse();
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>  AddOperator()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>  const AddOperator()));
               }),
         ],
 
@@ -109,6 +108,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
        child: Padding(
          padding: const EdgeInsets.all(10),
          child: Column(
+           crossAxisAlignment: CrossAxisAlignment.start,
                children: [
                  TextField(
                    controller: _searchController,
@@ -119,6 +119,21 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                    onChanged: (val){
                      setState(() {
                        name= val;
+                     });
+                   },
+                 ),
+                 DropdownButton(
+                   value: dropdownvaluetest,
+                   icon: const Icon(Icons.keyboard_arrow_down),
+                   items: itemstest.map((String items) {
+                     return DropdownMenuItem(
+                       value: items,
+                       child: Text(items),
+                     );
+                   }).toList(),
+                   onChanged: (String? newValue) {
+                     setState(() {
+                       dropdownvaluetest = newValue!;
                      });
                    },
                  ),
@@ -143,7 +158,6 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
     return StreamBuilder<QuerySnapshot>(stream: userStream,
         builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
           if(snapshot.hasError){
-            print('object');
           }if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(child: CircularProgressIndicator(),);
           }
@@ -154,6 +168,22 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
             storedoc.add(a);
           }).toList();
           return
+          // SizedBox(
+          //   child: Card(
+          //     child: Column(
+          //       children: [ for (var i = 0; i < storedoc.length; i++)...[
+          //         Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             Text("${storedoc[i]['fname']} ${storedoc[i]['lname']}"),
+          //             const Text('Op no'),
+          //             Text("${storedoc[i]['mobileno']}")
+          //           ],
+          //         ),]
+          //       ],
+          //     ),
+          //   ),
+          // );
             Column(
               children: [
                 for (var i = 0; i < storedoc.length; i++)...[
@@ -163,8 +193,130 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
-                      child:ListTile(title: Text("${storedoc[i]['fname']} ${storedoc[i]['lname']}")),
-
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          title: FittedBox(
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Voucher Details: ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, color: Colors.white,fontSize: 14),
+                                    ),
+                                    Text(
+                                      'vchrNo.toString()',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, color: Colors.white,fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Total Time: ',
+                                                style: TextStyle(color: Colors.white,fontSize: 14),
+                                              ),
+                                              Text(
+                                                'totTime.toString()',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,fontSize: 14,
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'start Time',
+                                                  style: TextStyle(color: Colors.white,fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'strT.toString()',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                'Total Data: ',
+                                                style: TextStyle(color: Colors.white,fontSize: 14),
+                                              ),
+                                              Text(
+                                                'totData.toString()',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  'End Time',
+                                                  style: TextStyle(color: Colors.white,fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  'endT.toString()',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white,fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -174,24 +326,4 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
         });
   }
 
-  Widget dropdown(){
-    return DropdownButton(
-      value: dropdownvalue,
-      icon: const Icon(Icons.keyboard_arrow_down),
-      items: items.map((String items) {
-        return DropdownMenuItem(
-          value: items,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(items),
-          ),
-        );
-      }).toList(),
-      onChanged: (String? newValue) {
-        setState(() {
-          dropdownvalue = newValue!;
-        });
-      },
-    );
-  }
 }
