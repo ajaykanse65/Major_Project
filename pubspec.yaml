@@ -59,6 +59,7 @@ dependencies:
   flutter_local_notifications: any
   fluttertoast: ^8.2.1
   firebase_storage: any
+  flutter_slidable: any
 
   flutter:
     sdk: flutter

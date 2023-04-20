@@ -289,7 +289,8 @@ class _LoginPageState extends State<LoginPage2> {
    return AlertDialog(
      content: SingleChildScrollView(
        child: Stack(
-         clipBehavior: Clip.none, children: <Widget>[
+         clipBehavior: Clip.none,
+         children: <Widget>[
            Positioned(
              right: -40.0,
              top: -40.0,
