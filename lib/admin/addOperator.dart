@@ -1,6 +1,8 @@
 
 import 'dart:io';
 
+import 'package:bms/Utils/app_color.dart';
+import 'package:bms/Utils/app_textstyle.dart';
 import 'package:bms/admin/adminHome.dart';
 import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminOperator.dart';
@@ -64,7 +66,8 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
   var gstncontroller = TextEditingController();
   var billingnamecontroller = TextEditingController();
   final _form = GlobalKey<FormState>();
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user => _auth.currentUser;
   CollectionReference operator = FirebaseFirestore.instance.collection('operator');
   CollectionReference signup = FirebaseFirestore.instance.collection('collectionPath');
   PlatformFile? pickedFile;
@@ -76,14 +79,18 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
       extendBody: true,
       backgroundColor: Color.fromRGBO(193, 214, 223, 1),
       appBar: SearchBar(titile: 'Add Operator'),
-      drawer: AdminDrawer(),
       body: SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
             child: Form(
               key: _form,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:  Text('Create new Operator here...!',style: AppTextStyle.instance.headlineMedium),
+                  ),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 5,vertical: 5),
                     decoration: BoxDecoration(
@@ -179,7 +186,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       ),
                                     ),
                                     const SizedBox(
-                                      height: 20,
+                                      height: 10,
                                     ),
                                     const Text(
                                       "User Id",
@@ -192,24 +199,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: useridcontroller,
                                         validator: (v) {
-                                          String? message;
                                           if (v == null || v.isEmpty) {
                                             return 'Please fill this field';
                                           }
-                                          if (RegExp('.*[A-Z].*').hasMatch(v ?? '')) {
-                                            message ??= '';
-                                            message += 'Input should not contain an uppercase letter A-Z. ';
-                                          }
-                                          return message;
+                                          return null;
                                         },
                                         decoration: const InputDecoration(
                                           hintText: "User ID",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -230,12 +232,21 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         obscureText: true,
                                         validator: (value1) {
                                           if (value1 == null || value1.isEmpty) {
                                             return 'Please fill this field';
+                                          }
+                                          if(value1.length < 6){
+                                            return "Password must be atleast 6 characters long";
+                                          }
+                                          if(value1.length > 20){
+                                            return "Password must be less than 20 characters";
+                                          }
+                                          if(!value1.contains(RegExp(r'[0-9]'))){
+                                            return "Password must contain a number";
                                           }
                                           return null;
                                         },
@@ -243,7 +254,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                         decoration: const InputDecoration(
                                           hintText: "Password",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -331,7 +342,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         validator: (value1) {
                                           if (value1 == null || value1.isEmpty) {
@@ -343,7 +354,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                         decoration: const InputDecoration(
                                           hintText: "First Name",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -364,13 +375,13 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: lastnamecontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Last Name",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -391,11 +402,11 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         validator: (value1) {
-                                          if (value1 == null || value1.isEmpty) {
-                                            return 'Please fill this field';
+                                          if(value1 == null || value1.isEmpty || !value1.contains('@') || !value1.contains('.')){
+                                            return 'Invalid Email';
                                           }
                                           return null;
                                         },
@@ -403,7 +414,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                         decoration: const InputDecoration(
                                           hintText: "Email Id",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -424,7 +435,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         validator: (value1) {
                                           if (value1!.isEmpty) {
@@ -436,10 +447,12 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                           return null;
                                         },
                                         controller: mobilecontroller,
+                                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                        keyboardType: TextInputType.number,
                                         decoration: const InputDecoration(
                                           hintText: "Mobile no",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -552,13 +565,13 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: distrctcontroller,
                                         decoration: const InputDecoration(
                                           hintText: "District",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -579,13 +592,13 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: talukacontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Taluka",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -606,17 +619,23 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         keyboardType: TextInputType.number,
                                         inputFormatters: <TextInputFormatter>[
                                           FilteringTextInputFormatter.digitsOnly
                                         ],
+                                        validator: (val){
+                                          if (val == null || val.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         controller: pincontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Pin Code",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -637,13 +656,13 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: areatcontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Area Name",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -664,13 +683,13 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: landmarkctcontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Land Mark",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -691,13 +710,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: lanectcontroller,
+                                        validator: (val){
+                                          if (val == null || val.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         decoration: const InputDecoration(
                                           hintText: "Lane/CHS/Building",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -718,13 +743,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: roomctcontroller,
+                                        validator: (v){
+                                          if (v == null || v.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         decoration: const InputDecoration(
                                           hintText: "Details Address",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -812,13 +843,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: billingnamecontroller,
+                                        validator: (v){
+                                          if (v == null || v.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         decoration: const InputDecoration(
                                           hintText: "Name",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -839,13 +876,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: pancontroller,
+                                        validator: (v){
+                                          if (v == null || v.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         decoration: const InputDecoration(
                                           hintText: "PAN Card ",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -872,7 +915,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                         decoration: const InputDecoration(
                                           hintText: "GSTN No",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -893,13 +936,19 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
+                                        validator: (v){
+                                          if (v == null || v.isEmpty) {
+                                            return 'Please fill this field';
+                                          }
+                                          return null;
+                                        },
                                         controller: aadharaddcontroller,
                                         decoration: const InputDecoration(
                                           hintText: "Aadhar No",
                                           hintStyle:
-                                          TextStyle(color: Colors.grey, fontSize: 18),
+                                          TextStyle(color: Colors.grey, fontSize: 16),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.zero,
                                           ),
@@ -1035,13 +1084,27 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: (){
+                      IconButton(onPressed: () async {
                         if (_form.currentState!.validate()) {
+                          _form.currentState!.save();
                           // use the information provided
                           // createUser();
                           AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text, role: dropdownvalue);
-                          addOperator();
+                          await Future.delayed(const Duration(milliseconds: 2000));
+                          signUP();
                           // test();
+                        }else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Colors.white,
+                              content: Text(
+                                'Please fill the empty field...',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          );
                         }
                       }, icon: Icon(Icons.done)),
                       IconButton(onPressed: (){}, icon: Icon(Icons.done)),
@@ -1071,7 +1134,7 @@ final downloadurl = await snapshot.ref.getDownloadURL();
 setState(() {
   downlaodTask = downloadurl.toString();
 });
-print(downlaodTask);
+
 
 }
   Future selectFile()async{
@@ -1102,13 +1165,36 @@ print(downlaodTask);
   }
 
 
-  Future<void> signUP(){
-    return signup
-        .add({
-      'uname' : useridcontroller.text,
-      'pass' : passwordcontroller.text,
-      'role' : dropdownvalue
-    });
+
+  Future<void> signUP()async {
+   FirebaseFirestore.instance.collection('collectionPath')
+       .doc(user!.uid)
+       .set({
+     'id': user.uid,
+     'role': dropdownvalue,
+     'pass': passwordcontroller.text,
+     'fname': fisrtnamecontroller.text,
+     'lname': lastnamecontroller.text,
+     'mobileno': mobilecontroller.text,
+     'email': emailcontroller.text,
+     'country': countryValue,
+     'state': stateValue,
+     'city': cityValue,
+     'dist': distrctcontroller.text,
+     'taluka': talukacontroller.text,
+     'pincode': pincontroller.text,
+     'area': areatcontroller.text,
+     'land': landmarkctcontroller.text,
+     'lane': lanectcontroller.text,
+     'roomno': roomctcontroller.text,
+     'pan': pancontroller.text,
+     'gstn': gstncontroller.text,
+     'billing': billingnamecontroller.text,
+     'aadharadd': aadharaddcontroller.text,
+     'documenttype': document,
+     'documenturl': downlaodTask,
+     'status': "Pending"
+   });
   }
 
   Future<void> addOperator(){
@@ -1133,7 +1219,8 @@ print(downlaodTask);
       'billing': billingnamecontroller.text,
       'aadharadd': aadharaddcontroller.text,
       'documenttype': document,
-      'documenturl': downlaodTask
+      'documenturl': downlaodTask,
+      'status': "Pending"
     });
   }
 }

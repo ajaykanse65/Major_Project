@@ -27,10 +27,6 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
   AnimationController? _animationController;
   @override
   void initState() {
-    isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-    if(!isEmailVerified){
-      sendVerificationEmail();
-    }
 
     _animationController = AnimationController(
       vsync: this,
@@ -78,7 +74,7 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
               bubbleColor: Color.fromRGBO(255, 171, 67, 1),
               onPress: () {
                 _animationController!.reverse();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AdminOperator()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  AdminOperator()));
               }),
           Bubble(
               icon: Icons.network_check,

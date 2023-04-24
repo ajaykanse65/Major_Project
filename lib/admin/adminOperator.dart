@@ -1,4 +1,4 @@
-import 'dart:math';
+
 
 import 'package:bms/admin/addOperator.dart';
 import 'package:bms/admin/adminHome.dart';
@@ -22,11 +22,14 @@ class AdminOperator extends StatefulWidget {
 
 class _AdminOperatorState extends State<AdminOperator> with SingleTickerProviderStateMixin {
 
-  final Stream<QuerySnapshot> userStream = FirebaseFirestore.instance.collection('operator').snapshots();
-  CollectionReference opCollection = FirebaseFirestore.instance.collection('operator');
+  // final Stream<QuerySnapshot> userStream = FirebaseFirestore.instance.collection('operator').snapshots();
+  final Stream<QuerySnapshot> loginStream = FirebaseFirestore.instance.collection('collectionPath').snapshots();
+  CollectionReference loginCollection = FirebaseFirestore.instance.collection('collectionPath');
+  // CollectionReference opCollection = FirebaseFirestore.instance.collection('operator');
   Animation<double>? _animation;
   AnimationController? _animationController;
   String name= '';
+  List loginList =[];
 
 
   @override
@@ -142,7 +145,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   Widget editData({required String id}){
     return FutureBuilder<DocumentSnapshot<Map <String,dynamic>>>(
       future: FirebaseFirestore.instance
-          .collection('operator')
+          .collection('collectionPath')
           .doc(id)
           .get(),
       builder: (_, snapshot){
@@ -157,7 +160,6 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
         emailid = data['email'];
         cno = data['mobileno'];
         statusdrop = data['status'];
-        print(emailid);
 
         return AlertDialog(
           title: const Text("Edit Details",style: TextStyle(color: Colors.black),),
@@ -317,7 +319,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
                             child: Container(
-                              height: 40,
+                              height: 50,
                               decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(8)
@@ -338,7 +340,6 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     updateDropdownvalue = newValue!;
-                                    statusdrop = updateDropdownvalue;
                                   });
                                 },
                               ),
@@ -356,7 +357,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                                         borderRadius: BorderRadius.all(Radius.circular(20))),
                                     child: const Text('Cancel',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.bold),)),),
                               InkWell(onTap: (){
-                                updateOP(id: id, fename: fisrtname, ltname: lastname, ststu: statusdrop, cnoo: cno, email: emailid,);
+                                updateOP(id: id, fename: fisrtname, ltname: lastname, ststu: updateDropdownvalue, cnoo: cno, email: emailid,);
                               },
                                 child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 5),
@@ -384,7 +385,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   }
 
   Future<void> updateOP({required id, required fename,required ltname,required email,required cnoo, required ststu})async {
-    return opCollection
+    return loginCollection
         .doc(id)
         .update({
       'fname': fename,
@@ -403,8 +404,10 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
       ),
     );
   }
+
+
   Widget table(BuildContext context){
-    return StreamBuilder<QuerySnapshot>(stream: userStream,
+    return StreamBuilder<QuerySnapshot>(stream: loginStream,
         builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
           if(snapshot.hasError){
           }if(snapshot.connectionState == ConnectionState.waiting){
@@ -416,6 +419,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
             Map a = document.data()as Map<String, dynamic>;
             storedoc.add(a);
             a['idop'] = document.id;
+            // print(a['idop'] = document.id);
           }).toList();
           return Column(
             children: [
@@ -548,7 +552,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   }
 
    deleteUser(id){
-    return opCollection
+    return loginCollection
         .doc(id)
         .delete()
         .catchError((e) => debugPrint(e));

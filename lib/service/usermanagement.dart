@@ -1,8 +1,7 @@
 
 
-import 'dart:convert';
-
 import 'package:bms/admin/adminHome.dart';
+import 'package:bms/customWidget/customSnackBarContent.dart';
 import 'package:bms/login.dart';
 import 'package:bms/operator/operatorHome.dart';
 import 'package:bms/page/home.dart';
@@ -22,9 +21,9 @@ class UserManagemnt{
       stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot){
         if(snapshot.hasData){
-          return AdminHome();
+          return const AdminHome();
         }
-        return LoginPage2();
+        return const LoginPage2();
         }
     );
   }
@@ -32,18 +31,37 @@ class UserManagemnt{
 
 
   authorizeAccess(BuildContext context)async{
-    DocumentSnapshot test = await FirebaseFirestore.instance.collection('collectionPath')
+    var test = await FirebaseFirestore.instance.collection('collectionPath')
         .doc(user!.uid)
-        .get();
-    var test2 = test.get('role') as String;
-    var test3 = test.get('uname') as String;
-    print(test3.toString());
-    if(test2 == 'Admin'){
-      // ignore: use_build_context_synchronously
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>  AdminHome()));
-    }else if(test2 == 'Operator'){
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>  OperatorHome()));
-    }
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+          if(documentSnapshot.exists){
+            if(documentSnapshot.get('role') == 'Operator' && documentSnapshot.get('status') == 'Approved'){
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: CustomSuccessContent(),
+                behavior: SnackBarBehavior.fixed,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+              ));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const OperatorHome()));
+            }else if(documentSnapshot.get('role') == 'Admin' && documentSnapshot.get('status') == 'Approved'){
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: CustomSuccessContent(),
+                behavior: SnackBarBehavior.fixed,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+              ));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const AdminHome()));
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar( const SnackBar(
+                content: CustomSnackBarContent(errorText: 'Sorry...! Your Id is not Approved yet',),
+                behavior: SnackBarBehavior.floating,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+              ));
+          }
+          }
+    });
 
   }
   signOut(){

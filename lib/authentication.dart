@@ -38,12 +38,7 @@ class AuthenticationHelper {
       required String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: CustomSuccessContent(),
-        behavior: SnackBarBehavior.fixed,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ));
+
       await Future.delayed(const Duration(milliseconds: 3000));
       UserManagemnt().authorizeAccess(context);
 
