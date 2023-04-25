@@ -6,8 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:bms/pie_chart/categories_row.dart';
-import 'package:bms/pie_chart/pie_chart_view.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/dot_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -114,8 +112,8 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
                       Text("User Details",style: GoogleFonts.rubik(fontWeight: FontWeight.w400,fontSize: 18),),
                       Expanded(child: Row(
                         children: [
-                          CategoriesRow(),
-                          PieChartView(count: count,),
+                          // CategoriesRow(),
+                          // PieChartView(count: count,),
                         ],
                       ),)
                     ],

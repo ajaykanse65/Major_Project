@@ -108,33 +108,84 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
          child: Column(
            crossAxisAlignment: CrossAxisAlignment.start,
                children: [
-                 TextField(
-                   controller: _searchController,
-                   decoration: const InputDecoration(
-                   prefixIcon: Icon(Icons.search),
-                   hintText: 'Search...'
+                 Padding(
+                   padding: const EdgeInsets.all(8.0),
+                   child: TextFormField(
+                     controller: _searchController,
+                     decoration:  InputDecoration(
+                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.black)),
+                     prefixIcon: Icon(Icons.search),
+                     hintText: 'Search...'
+                     ),
+                     onChanged: (val){
+                       setState(() {
+
+                       });
+                     },
                    ),
-                   onChanged: (val){
-                     setState(() {
-                       name= val;
-                     });
-                   },
                  ),
-                 DropdownButton(
-                   value: dropdownvaluetest,
-                   icon: const Icon(Icons.keyboard_arrow_down),
-                   items: itemstest.map((String items) {
-                     return DropdownMenuItem(
-                       value: items,
-                       child: Text(items),
-                     );
-                   }).toList(),
-                   onChanged: (String? newValue) {
-                     setState(() {
-                       dropdownvaluetest = newValue!;
-                     });
-                   },
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     TextButton(onPressed: (){}, child: Container(
+                       width: 60,
+                       decoration: BoxDecoration(
+                         border: Border.all(width: 2),
+                         color: Colors.grey,
+                         borderRadius: BorderRadius.circular(15)
+                       ),
+                         child: const Center(child: Text("All", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                     TextButton(onPressed: (){}, child: Container(
+                         width: 100,
+                         decoration: BoxDecoration(
+                             border: Border.all(width: 2),
+                             color: Colors.grey,
+                             borderRadius: BorderRadius.circular(15)
+                         ),
+                         child: const Center(child: Text("Approved", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                     TextButton(onPressed: (){}, child: Container(
+                         width: 100,
+                         decoration: BoxDecoration(
+                             border: Border.all(width: 2),
+                             color: Colors.grey,
+                             borderRadius: BorderRadius.circular(15)
+                         ),
+                         child: const Center(child: Text("Pending", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+
+                   ],
                  ),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.end,
+                   crossAxisAlignment: CrossAxisAlignment.end,
+                   children: [
+                     TextButton(onPressed: (){}, child: Container(
+                         width: 100,
+                         decoration: BoxDecoration(
+                             border: Border.all(width: 2),
+                             color: Colors.grey,
+                             borderRadius: BorderRadius.circular(15)
+                         ),
+                         child: const Center(child: Text("Rejected", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                     TextButton(onPressed: (){}, child: Container(
+                         width: 100,
+                         decoration: BoxDecoration(
+                             border: Border.all(width: 2),
+                             color: Colors.grey,
+                             borderRadius: BorderRadius.circular(15)
+                         ),
+                         child: const Center(child: Text("Active", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                     TextButton(onPressed: (){}, child: Container(
+                         width: 100,
+                         decoration: BoxDecoration(
+                             border: Border.all(width: 2),
+                             color: Colors.grey,
+                             borderRadius: BorderRadius.circular(15)
+                         ),
+                         child: const Center(child: Text("Deactivated", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   ],
+                 ),
+
                  table(context),
                ],
              ),
