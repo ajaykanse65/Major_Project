@@ -7,6 +7,7 @@ import 'package:bms/widget/custom_search_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_state_city_picker/country_state_city_picker.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ class _AddUserState extends State<AddUser> {
   bool isVisible2 = false;
   bool isVisible3 = false;
   bool isVisible4 = false;
+  bool isVisible5 = false;
   late String countryValue;
   late String stateValue;
   late String cityValue;
@@ -45,8 +47,16 @@ class _AddUserState extends State<AddUser> {
 
   @override
   void initState() {
+    getUid();
     super.initState();
   }
+  Future<void> getUid() async{
+    final currentUser = await FirebaseAuth.instance.currentUser;
+    setState(() {
+      userId = currentUser!.uid;
+    });
+  }
+
 
   var useridcontroller = TextEditingController();
   var passwordcontroller = TextEditingController();
@@ -66,9 +76,10 @@ class _AddUserState extends State<AddUser> {
   var billingnamecontroller = TextEditingController();
   final Stream<QuerySnapshot> planStream =
       FirebaseFirestore.instance.collection('planDetails').snapshots();
-  String selectedPlan="0";
-  String? planId;
-  var planPrice, planSpeed, commissionPrice, duration;
+  var selectedPlan ='0';
+  var planId="";
+  var planPrice, planSpeed, commissionPrice, duration, planName;
+  String? userId;
 
   @override
   Widget build(BuildContext context) {
@@ -908,8 +919,6 @@ class _AddUserState extends State<AddUser> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-
-
                                   Container(
                                     height: 32,
                                     width: MediaQuery.of(context).size.width,
@@ -921,6 +930,23 @@ class _AddUserState extends State<AddUser> {
                                       child: planData(context),
                                     ),
                                   ),
+                                  // selectedPlan != null ? Container(child: Text(planSpeed),):Text('data'),
+
+                                  //  SizedBox(
+                                  //   child: Visibility(
+                                  //     visible: isVisible5,
+                                  //       child: Row(
+                                  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  //         children: [
+                                  //           Text("Speed:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text(planSpeed,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text("Price:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text("${planPrice}₹",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text("Validity:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text(duration,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),)
+                                  //         ],
+                                  //       )),
+                                  // ),
                                   const SizedBox(
                                     height: 20,
                                   ),
@@ -1142,6 +1168,8 @@ class _AddUserState extends State<AddUser> {
                         onPressed: () async {
                           if (_form.currentState!.validate()) {
                             _form.currentState!.save();
+                            getUid();
+                            addUser();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -1168,6 +1196,42 @@ class _AddUserState extends State<AddUser> {
         ),
       ),
     );
+  }
+
+   addUser() {
+    DocumentReference parentDocRef = FirebaseFirestore.instance.collection('collectionPath').doc(userId.toString());
+    CollectionReference subCollectionRef = parentDocRef.collection('UserCollection');
+    Map<String, dynamic> data= {
+      "userType" : dropdownvalue.toString(),
+      "userId": useridcontroller.text,
+      "password": passwordcontroller.text,
+      "fname" : fisrtnamecontroller.text,
+      "lanme": lastnamecontroller.text,
+      "emailid": emailcontroller.text,
+      "mobileNo" : mobilecontroller.text,
+      "country" : countryValue.toString(),
+      "state" : stateValue.toString(),
+      "city" : cityValue.toString(),
+      "dist" : distrctcontroller.text,
+      "taluka" : talukacontroller.text,
+      "pinCode" : pincontroller.text,
+      "areaName" : areatcontroller.text,
+      "landmark" : landmarkctcontroller.text,
+      "buildingName" : lanectcontroller.text,
+      "roomNo" : roomctcontroller.text,
+      "billingName" : billingnamecontroller.text,
+      "planName" : planName.toString(),
+      "planSpeed": planSpeed.toString(),
+      "planPrice": planPrice.toString(),
+      "validity": duration.toString(),
+      "panNo" : pancontroller.text,
+      "aadharNo": aadharaddcontroller.text,
+      "documentURL": downlaodTask.toString(),
+      "status": "Pending"
+    };
+    subCollectionRef.doc().set(data)
+    .then((value) => debugPrint("Data Added Successfully"))
+    .catchError((e) => debugPrint("error: $e"));
   }
 
   Widget planData(BuildContext context) {
@@ -1200,13 +1264,11 @@ class _AddUserState extends State<AddUser> {
                 onChanged: (planvalue) {
                   setState(() {
                     selectedPlan = planvalue!;
-                    planId = planvalue;
+                    planId = planvalue!;
+                    getData();
                   });
-                  getData();
+                  print(planId);
                   print(planSpeed);
-                  print(commissionPrice);
-                  print(duration);
-                  print(planPrice);
                 },
                 isExpanded: true,
                 value: selectedPlan,
@@ -1221,10 +1283,11 @@ class _AddUserState extends State<AddUser> {
     var docSnapshot = await collection.doc(planId.toString()).get();
     if(docSnapshot.exists){
       Map<String, dynamic>? data = docSnapshot.data();
-      planPrice = data?['planPrice'];
-      planSpeed = data?['planSpeed'];
-      commissionPrice = data?['commissionPrice'];
-      duration = data?['duration'];
+        planPrice = data?['planPrice'];
+        planSpeed = data?['planSpeed'];
+        commissionPrice = data?['commissionPrice'];
+        duration = data?['duration'];
+        planName = data?['planName'];
     }
   }
 

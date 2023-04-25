@@ -129,7 +129,7 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
     );
   }
   getData() async{
-    QuerySnapshot data = await FirebaseFirestore.instance.collection('operator').get();
+    QuerySnapshot data = await FirebaseFirestore.instance.collection('collectionPath').get();
     var get = data.docs;
     var last = get.length.toString();
     setState(() {

@@ -29,7 +29,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   Animation<double>? _animation;
   AnimationController? _animationController;
   String name= '';
-  List loginList =[];
+
 
 
   @override
@@ -142,6 +142,7 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
      ),
     );
   }
+
   Widget editData({required String id}){
     return FutureBuilder<DocumentSnapshot<Map <String,dynamic>>>(
       future: FirebaseFirestore.instance
@@ -319,13 +320,13 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
                             child: Container(
-                              height: 50,
+                              height: 60,
                               decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(8)
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              child: DropdownButton(
+                              child: DropdownButtonFormField(
                                 value: updateDropdownvalue,
                                 icon: const Icon(Icons.keyboard_arrow_down,color: Colors.black,),
                                 items: itemsUpdate.map((String items) {
