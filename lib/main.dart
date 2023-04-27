@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:bms/Utils/app_theme.dart';
 import 'package:bms/login.dart';
 import 'package:bms/service/usermanagement.dart';
@@ -7,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
@@ -24,6 +27,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future<void> main() async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -103,5 +107,13 @@ class _AppState extends State<App> {
       //     primaryColor: Colors.deepOrangeAccent.shade200, fontFamily: "Ubuntu"),
       home: UserManagemnt().handleAuth(),
     );
+  }
+}
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

@@ -2,6 +2,7 @@
 import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminOperator.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
+import 'package:bms/admin/payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -83,6 +84,16 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
               onPress: () {
                 _animationController!.reverse();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => AdminNetwork()));
+              }),
+          Bubble(
+              icon: Icons.payment,
+              iconColor: Colors.black,
+              title: 'Payment',
+              titleStyle: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 17),
+              bubbleColor: Color.fromRGBO(46, 198, 255, 1),
+              onPress: () {
+                _animationController!.reverse();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePayment()));
               }),
         ],
 

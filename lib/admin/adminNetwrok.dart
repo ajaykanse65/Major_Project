@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AdminNetwork extends StatefulWidget {
@@ -70,9 +71,11 @@ class _AdminNetworkState extends State<AdminNetwork>
   TextEditingController planPrice = TextEditingController();
   TextEditingController commissionPrice = TextEditingController();
   final _planformkey = GlobalKey<FormState>();
-  CollectionReference addplan = FirebaseFirestore.instance.collection('planDetails');
+  CollectionReference planCollection = FirebaseFirestore.instance.collection('planDetails');
   final Stream<QuerySnapshot> planDetails = FirebaseFirestore.instance.collection('planDetails').snapshots();
-
+  final List planList=[];
+  var editplan ,editPrice ,editSpeed ,editopcm;
+  // var updatename, updateSpeed, updatePrice, updatecmop;
 
 
 
@@ -320,8 +323,6 @@ class _AdminNetworkState extends State<AdminNetwork>
         fontSize: 16.0);
   }
 
-
-
   Widget planDetailsWidget(BuildContext context){
     return StreamBuilder<QuerySnapshot>(stream: planDetails,
         builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -330,33 +331,300 @@ class _AdminNetworkState extends State<AdminNetwork>
           }if(snapshot.connectionState == ConnectionState.waiting){
             return Center(child: CircularProgressIndicator(),);
           }
-          final List storedoc= [];
+
           snapshot.data!.docs.map((DocumentSnapshot document) {
             Map a = document.data()as Map<String, dynamic>;
-            storedoc.add(a);
+            planList.add(a);
+            a['idop'] = document.id;
           }).toList();
-          return Column(
-            children: [
-              for (var i = 0; i < storedoc.length; i++)...[
-                SizedBox(
-                  child: Card(
-                    color: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+          return
+            Expanded(
+              child: ListView.builder(
+                // physics: const AlwaysScrollableScrollPhysics(),
+                // controller: _controller,
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: planList.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return
+                      Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),),
+                      color: Colors.blueGrey,
+                      child: Slidable(
+                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                          SlidableAction(onPressed: (context){
+                            showDialog(context: context, builder: (BuildContext context) =>
+                                editData(id:planList[index]['idop'])
+                            );
+                          },
+                            label: 'Edit',
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                          )
+                        ]),
+                        startActionPane: ActionPane(motion: const StretchMotion(), children: [
+                          SlidableAction(onPressed: (context) =>{
+                            // deleteUser(_filterList[index]['idop'])
+                          },
+                            label: 'Delete',
+                            backgroundColor: const Color(0xFFFE4A49),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                          )
+                        ]),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(10),
+                          title: Text("${planList[index]['planName']}"),
+                          subtitle: Text("Plan Speed: ${planList[index]['planSpeed']} \nPlan Price: ${planList[index]['planPrice']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                          trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Validity:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              Text('${planList[index]['duration']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                               Text('OP Price: ${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              // Text('${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                            ],
+                          ),
+                          leading: const CircleAvatar(
+                            radius: 25,
+                            backgroundImage:
+                            // NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/WIFI_icon.svg/256px-WIFI_icon.svg.png'),
+                            AssetImage('assets/wifi.png'),
+                            backgroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+              ),
+            );
+        });
+  }
+
+  Widget editData({required String id}){
+    return FutureBuilder<DocumentSnapshot<Map <String,dynamic>>>(
+      future: FirebaseFirestore.instance
+          .collection('planDetails')
+          .doc(id)
+          .get(),
+      builder: (_, snapshot){
+        if(snapshot.hasError){
+
+        } if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(child: CircularProgressIndicator(),);
+        }
+        var data = snapshot.data!.data();
+        editplan = data!['planName'];
+        editPrice = data['planPrice'];
+        editSpeed = data['planSpeed'];
+        editopcm = data['commissionPrice'];
+        // statusdrop = data['status'];
+
+        return AlertDialog(
+          title: const Text("Edit Details",style: TextStyle(color: Colors.black),),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          content: Card(
+            elevation: 20,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                border:Border.all(width: 2),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Stack(
+                clipBehavior: Clip.none, children: <Widget>[
+                Positioned(
+                  right: -54.0,
+                  top: -92.0,
+                  child: InkResponse(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const CircleAvatar(
+                      child: Icon(Icons.close),
+                      backgroundColor: Color(0xFF11253d),
                     ),
-                    child:ListTile(title: Text("${storedoc[i]['planName']}")),
+                  ),
+                ),
+                SingleChildScrollView(
+                  child: Form(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Plan Name:',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                initialValue: editplan,
+                                onChanged: (value)=> editplan = value,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter a Plan Name!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Plan Speed:',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: TextFormField(style: const TextStyle(color: Colors.grey),
+                                initialValue: editSpeed,
+                                onChanged: (value)=> editSpeed = value,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter a Plan Speed!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Plan Price:',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                initialValue: editPrice,
+                                onChanged: (value)=> editPrice = value,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter a Price!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Text('Commission Price',style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0,right: 8.0,bottom: 8.0,top: 4.0),
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8)
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              child: TextFormField(
+                                style: const TextStyle(color: Colors.grey),
+                                initialValue: editopcm,
+                                onChanged: (value)=> editopcm = value,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter a Price!';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              InkWell(onTap: (){},
+                                child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                                    child: const Text('Cancel',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.bold),)),),
+                              InkWell(onTap: (){
+                                updateOP(id: id, fename: editplan, ltname: editPrice, ststu: editopcm, cnoo: editSpeed,);
+                              },
+                                child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                    decoration: const BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                                    child: const Text('Submit',style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.bold),)),)
+
+                            ],
+                          )
+                        ],
+                      )
+
 
                   ),
                 ),
               ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
-            ],
-          );
-        });
+  Future<void> updateOP({required id, required fename,required ltname,required cnoo, required ststu})async {
+    return planCollection
+        .doc(id)
+        .update({
+      'planName': fename,
+      'planPrice': ltname,
+      'planSpeed':cnoo,
+      'commissionPrice' : ststu
+    }).then((v) => debugPrint('success'))
+        .catchError((e) => debugPrint(e));
+  }
+
+  deleteUser(id){
+    return planCollection
+        .doc(id)
+        .delete()
+        .catchError((e) => debugPrint(e));
   }
 
   Future<void> createPlan() {
-    return addplan.add({
+    return planCollection.add({
       'planName': planName.text,
       'planPrice': planPrice.text,
       'planSpeed': dropdownvalue,

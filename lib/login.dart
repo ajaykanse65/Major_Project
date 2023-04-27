@@ -447,6 +447,7 @@ class _LoginPageState extends State<LoginPage2> {
      ),
    );
   }
+
   Future sendEmail() async{
     final uri = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
     const serviceId = "service_hi9ygcc";

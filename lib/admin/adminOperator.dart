@@ -5,6 +5,8 @@ import 'package:bms/admin/adminHome.dart';
 import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
 import 'package:bms/admin/model/operatorDetails.dart';
+import 'package:bms/listtest.dart';
+import 'package:bms/page/home.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -30,10 +32,21 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
   AnimationController? _animationController;
   String name= '';
 
+  List _foundUsers=[];
+
+  String query ='';
+  TextEditingController searchController = TextEditingController();
+
 
 
   @override
   void initState() {
+    searchController.addListener(() {
+      setState(() {
+        query = searchController.text;
+      });
+    });
+    _foundUsers = _filterList;
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -42,6 +55,11 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
     CurvedAnimation(curve: Curves.easeInOut, parent: _animationController!);
     _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
     super.initState();
+  }
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   String dropdownvaluetest = 'All';
@@ -52,6 +70,9 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
 
   final TextEditingController _searchController = TextEditingController();
   var fisrtname, lastname, emailid, cno, statusdrop, docname;
+
+  List _filterList =[];
+
 
 
   @override
@@ -102,95 +123,100 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
       backgroundColor: const Color.fromRGBO(193, 214, 223, 1),
       drawer: const AdminDrawer(),
      appBar: const SearchBar(titile: 'Operator'),
-     body: SingleChildScrollView(
-       child: Padding(
+     body: Padding(
          padding: const EdgeInsets.all(10),
          child: Column(
-           crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Padding(
-                   padding: const EdgeInsets.all(8.0),
-                   child: TextFormField(
-                     controller: _searchController,
-                     decoration:  InputDecoration(
-                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.black)),
-                     prefixIcon: Icon(Icons.search),
-                     hintText: 'Search...'
-                     ),
-                     onChanged: (val){
-                       setState(() {
-
-                       });
-                     },
-                   ),
-                 ),
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.start,
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     TextButton(onPressed: (){}, child: Container(
-                       width: 60,
-                       decoration: BoxDecoration(
-                         border: Border.all(width: 2),
-                         color: Colors.grey,
-                         borderRadius: BorderRadius.circular(15)
+             // crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+                   Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: TextFormField(
+                       controller: searchController,
+                       decoration:  InputDecoration(
+                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25),borderSide: BorderSide(color: Colors.black)),
+                       prefixIcon: Icon(Icons.search),
+                       hintText: 'Search...'
                        ),
-                         child: const Center(child: Text("All", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
-                     TextButton(onPressed: (){}, child: Container(
-                         width: 100,
-                         decoration: BoxDecoration(
-                             border: Border.all(width: 2),
-                             color: Colors.grey,
-                             borderRadius: BorderRadius.circular(15)
-                         ),
-                         child: const Center(child: Text("Approved", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
-                     TextButton(onPressed: (){}, child: Container(
-                         width: 100,
-                         decoration: BoxDecoration(
-                             border: Border.all(width: 2),
-                             color: Colors.grey,
-                             borderRadius: BorderRadius.circular(15)
-                         ),
-                         child: const Center(child: Text("Pending", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                       // onChanged: (val) {
+                       //   setState(() {
+                       //     // filterSearchResults(val);
+                       //     query = val.toLowerCase();
+                       //
+                       //   });
+                       // },
+                     ),
+                   ),
 
-                   ],
-                 ),
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.end,
-                   crossAxisAlignment: CrossAxisAlignment.end,
-                   children: [
-                     TextButton(onPressed: (){}, child: Container(
-                         width: 100,
-                         decoration: BoxDecoration(
-                             border: Border.all(width: 2),
-                             color: Colors.grey,
-                             borderRadius: BorderRadius.circular(15)
-                         ),
-                         child: const Center(child: Text("Rejected", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
-                     TextButton(onPressed: (){}, child: Container(
-                         width: 100,
-                         decoration: BoxDecoration(
-                             border: Border.all(width: 2),
-                             color: Colors.grey,
-                             borderRadius: BorderRadius.circular(15)
-                         ),
-                         child: const Center(child: Text("Active", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
-                     TextButton(onPressed: (){}, child: Container(
-                         width: 100,
-                         decoration: BoxDecoration(
-                             border: Border.all(width: 2),
-                             color: Colors.grey,
-                             borderRadius: BorderRadius.circular(15)
-                         ),
-                         child: const Center(child: Text("Deactivated", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
-                   ],
-                 ),
 
-                 table(context),
-               ],
-             ),
+                   // TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => SearchListView()));}, child: Text("jbjasb")),
+
+                   // Row(
+                   //   mainAxisAlignment: MainAxisAlignment.start,
+                   //   crossAxisAlignment: CrossAxisAlignment.start,
+                   //   children: [
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //       width: 60,
+                   //       decoration: BoxDecoration(
+                   //         border: Border.all(width: 2),
+                   //         color: Colors.grey,
+                   //         borderRadius: BorderRadius.circular(15)
+                   //       ),
+                   //         child: const Center(child: Text("All", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //         width: 100,
+                   //         decoration: BoxDecoration(
+                   //             border: Border.all(width: 2),
+                   //             color: Colors.grey,
+                   //             borderRadius: BorderRadius.circular(15)
+                   //         ),
+                   //         child: const Center(child: Text("Approved", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //         width: 100,
+                   //         decoration: BoxDecoration(
+                   //             border: Border.all(width: 2),
+                   //             color: Colors.grey,
+                   //             borderRadius: BorderRadius.circular(15)
+                   //         ),
+                   //         child: const Center(child: Text("Pending", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //
+                   //   ],
+                   // ),
+                   // Row(
+                   //   mainAxisAlignment: MainAxisAlignment.end,
+                   //   crossAxisAlignment: CrossAxisAlignment.end,
+                   //   children: [
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //         width: 100,
+                   //         decoration: BoxDecoration(
+                   //             border: Border.all(width: 2),
+                   //             color: Colors.grey,
+                   //             borderRadius: BorderRadius.circular(15)
+                   //         ),
+                   //         child: const Center(child: Text("Rejected", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //         width: 100,
+                   //         decoration: BoxDecoration(
+                   //             border: Border.all(width: 2),
+                   //             color: Colors.grey,
+                   //             borderRadius: BorderRadius.circular(15)
+                   //         ),
+                   //         child: const Center(child: Text("Active", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //     TextButton(onPressed: (){}, child: Container(
+                   //         width: 100,
+                   //         decoration: BoxDecoration(
+                   //             border: Border.all(width: 2),
+                   //             color: Colors.grey,
+                   //             borderRadius: BorderRadius.circular(15)
+                   //         ),
+                   //         child: const Center(child: Text("Deactivated", selectionColor: Colors.red,style: TextStyle(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),))),),
+                   //   ],
+                   // ),
+                   table(context),
+                 ],
+               ),
+
        ),
-     ),
+     
     );
   }
 
@@ -465,66 +491,181 @@ class _AdminOperatorState extends State<AdminOperator> with SingleTickerProvider
           }if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(child: CircularProgressIndicator(),);
           }
-          final List storedoc= [];
-
           snapshot.data!.docs.map((DocumentSnapshot document) {
             Map a = document.data()as Map<String, dynamic>;
-            storedoc.add(a);
+            _filterList.add(a);
             a['idop'] = document.id;
             // print(a['idop'] = document.id);
           }).toList();
-          return Column(
-            children: [
-              for (var i = 0; i < storedoc.length; i++)...[
-                Card(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25),),
-                  color: Colors.blueGrey,
-                  child: Slidable(
-                    endActionPane: ActionPane(motion: const StretchMotion(), children: [
-                    SlidableAction(onPressed: (context){
-                      showDialog(context: context, builder: (BuildContext context) =>
-                          editData(id:storedoc[i]['idop'])
-                      );
-                    },
-                      label: 'Edit',
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      icon: Icons.edit,
-                    )
-                  ]),
-                    startActionPane: ActionPane(motion: const StretchMotion(), children: [
-                      SlidableAction(onPressed: (context) =>{
-                        deleteUser(storedoc[i]['idop'])
-                      },
-                        label: 'Delete',
-                        backgroundColor: const Color(0xFFFE4A49),
-                        foregroundColor: Colors.white,
-                        icon: Icons.delete,
+          return
+              Expanded(
+                child: ListView.builder(
+                    // physics: const AlwaysScrollableScrollPhysics(),
+                    // controller: _controller,
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                  itemCount: _foundUsers.length,
+                    itemBuilder: (BuildContext context, int index){
+                      final item = _filterList[index]['fname'].toLowerCase();
+                      // final item = _filterList[index]['fname'].toLowerCase();
+                      // final item1 = _filterList[index]['status'].toLowerCase();
+                      // if (query.isNotEmpty && !item.contains(query) && !item1.contains(query)) {
+                      //   return SizedBox.shrink();
+                      // }
+                    return query == null || query == ""
+                      ?
+                      Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),),
+                        color: Colors.blueGrey,
+                        child: Slidable(
+                          endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                            SlidableAction(onPressed: (context){
+                              showDialog(context: context, builder: (BuildContext context) =>
+                                  editData(id:_filterList[index]['idop'])
+                              );
+                            },
+                              label: 'Edit',
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              icon: Icons.edit,
+                            )
+                          ]),
+                          startActionPane: ActionPane(motion: const StretchMotion(), children: [
+                            SlidableAction(onPressed: (context) =>{
+                              deleteUser(_filterList[index]['idop'])
+                            },
+                              label: 'Delete',
+                              backgroundColor: const Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                            )
+                          ]),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.all(10),
+                            title: Text("${_filterList[index]['fname']} ${_filterList[index]['lname']}"),
+                            subtitle: Text("${_filterList[index]['email']} \nContact No: ${_filterList[index]['mobileno']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                            trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Status:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                Text('${_filterList[index]['status']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                 Text('Balance: ${_filterList[index]['bal']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              ],
+                            ),
+                            leading: const CircleAvatar(
+                              radius: 25,
+                              backgroundImage: NetworkImage('https://e7.pngegg.com/pngimages/518/64/png-clipart-person-icon-computer-icons-user-profile-symbol-person-miscellaneous-monochrome.png'),
+                            ),
+                          ),
+                        ),
                       )
-                    ]),
-                    child: ListTile(
-                    contentPadding: const EdgeInsets.all(10),
-                    title: Text("${storedoc[i]['fname']} ${storedoc[i]['lname']}"),
-                    subtitle: Text("${storedoc[i]['email']} \nContact No: ${storedoc[i]['mobileno']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                    trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Status:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                      Text('${storedoc[i]['status']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                      const Text('Balance: 100',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                    ],
-                    ),
-                    leading: const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage('https://e7.pngegg.com/pngimages/518/64/png-clipart-person-icon-computer-icons-user-profile-symbol-person-miscellaneous-monochrome.png'),
-                    ),
-              ),
-                  ),
+                        : item.toLowerCase().contains(query.toLowerCase())
+                        ? Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),),
+                      color: Colors.blueGrey,
+                      child: Slidable(
+                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                          SlidableAction(onPressed: (context){
+                            showDialog(context: context, builder: (BuildContext context) =>
+                                editData(id:_filterList[index]['idop'])
+                            );
+                          },
+                            label: 'Edit',
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                          )
+                        ]),
+                        startActionPane: ActionPane(motion: const StretchMotion(), children: [
+                          SlidableAction(onPressed: (context) =>{
+                            deleteUser(_filterList[index]['idop'])
+                          },
+                            label: 'Delete',
+                            backgroundColor: const Color(0xFFFE4A49),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                          )
+                        ]),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(10),
+                          title: Text("${_filterList[index]['fname']} ${_filterList[index]['lname']}"),
+                          subtitle: Text("${_filterList[index]['email']} \nContact No: ${_filterList[index]['mobileno']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                          trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Status:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              Text('${_filterList[index]['status']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              const Text('Balance: 100',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                            ],
+                          ),
+                          leading: const CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            backgroundImage:
+                            // NetworkImage('https://e7.pngegg.com/pngimages/518/64/png-clipart-person-icon-computer-icons-user-profile-symbol-person-miscellaneous-monochrome.png'),
+                            AssetImage('assets/card.png'),
+                          ),
+                        ),
+                      ),
+                    )
+                        :Container();
+                    }
                 ),
-              ]
-            ],
-          );
+              );
+          //   Column(
+          //   children: [
+          //     for (var i = 0; i < _foundUsers.length; i++)...[
+          //       Card(
+          //         elevation: 10,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),),
+          //         color: Colors.blueGrey,
+          //         child: Slidable(
+          //           endActionPane: ActionPane(motion: const StretchMotion(), children: [
+          //           SlidableAction(onPressed: (context){
+          //             showDialog(context: context, builder: (BuildContext context) =>
+          //                 editData(id:_foundUsers[i]['idop'])
+          //             );
+          //           },
+          //             label: 'Edit',
+          //             backgroundColor: Colors.blue,
+          //             foregroundColor: Colors.white,
+          //             icon: Icons.edit,
+          //           )
+          //         ]),
+          //           startActionPane: ActionPane(motion: const StretchMotion(), children: [
+          //             SlidableAction(onPressed: (context) =>{
+          //               deleteUser(_foundUsers[i]['idop'])
+          //             },
+          //               label: 'Delete',
+          //               backgroundColor: const Color(0xFFFE4A49),
+          //               foregroundColor: Colors.white,
+          //               icon: Icons.delete,
+          //             )
+          //           ]),
+          //           child: ListTile(
+          //           contentPadding: const EdgeInsets.all(10),
+          //           title: Text("${_foundUsers[i]['fname']} ${_foundUsers[i]['lname']}"),
+          //           subtitle: Text("${_foundUsers[i]['email']} \nContact No: ${_foundUsers[i]['mobileno']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+          //           trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             const Text('Status:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+          //             Text('${_foundUsers[i]['status']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+          //             const Text('Balance: 100',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+          //           ],
+          //           ),
+          //           leading: const CircleAvatar(
+          //             radius: 25,
+          //             backgroundImage: NetworkImage('https://e7.pngegg.com/pngimages/518/64/png-clipart-person-icon-computer-icons-user-profile-symbol-person-miscellaneous-monochrome.png'),
+          //           ),
+          //     ),
+          //         ),
+          //       ),
+          //     ]
+          //   ],
+          // );
           // SizedBox(
           //   child: Card(
           //     child: Column(

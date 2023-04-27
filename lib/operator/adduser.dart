@@ -939,8 +939,7 @@ class _AddUserState extends State<AddUser> {
                                   //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   //         children: [
                                   //           Text("Speed:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
-                                  //           Text(planSpeed,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
-                                  //           Text("Price:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  //           Text(planSpeed,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),//           Text("Price:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
                                   //           Text("${planPrice}₹",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
                                   //           Text("Validity:",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14),),
                                   //           Text(duration,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),)

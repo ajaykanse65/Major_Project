@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  pay: any
   multilevel_drawer: ^2.0.0
   syncfusion_flutter_charts: ^20.1.61
   flip_card: ^0.6.0
@@ -60,6 +61,8 @@ dependencies:
   fluttertoast: ^8.2.1
   firebase_storage: any
   flutter_slidable: any
+  razorpay_flutter: any
+
 
   flutter:
     sdk: flutter
@@ -98,6 +101,8 @@ flutter:
      - assets/card.png
      - assets/
      - assets/icons/
+     - assets/wifi.png
+     - assets/wi.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
