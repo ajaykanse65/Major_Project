@@ -1,6 +1,8 @@
 
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class PlanDetails{
   final CollectionReference planStream = FirebaseFirestore.instance.collection('planDetails');
@@ -34,3 +36,4 @@ class PlanDetails{
     }
   }
 }
+

@@ -101,8 +101,8 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      darkTheme: AppTheme.light,
+      // theme: AppTheme.dark,
+      // darkTheme: AppTheme.light,
       // theme: ThemeData(
       //     primaryColor: Colors.deepOrangeAccent.shade200, fontFamily: "Ubuntu"),
       home: UserManagemnt().handleAuth(),

@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:bms/Utils/loading_dialog.dart';
 import 'package:bms/admin/adminHome.dart';
 import 'package:bms/admin/adminOperator.dart';
+import 'package:bms/admin/adminbottomdot.dart';
 import 'package:bms/admin/model/plandetails.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,35 +23,13 @@ class AdminNetwork extends StatefulWidget {
 
 class _AdminNetworkState extends State<AdminNetwork>
     with SingleTickerProviderStateMixin {
-  final List<Map> _network = [
-    {
-      'networkname': 'Test Network Agent',
-      'users': '3',
-      'topup': '4,035',
-      'dueamt': '10,300',
-      'rperson': 'prasad',
-      'contact': '9223351536',
-      'address': '1548 bmc, 6, malad w',
-      'PAN': 'test212234r',
-      'gstn': '27test21234r',
-    },
-    {
-      'networkname': 'Test Network Agent',
-      'users': '3',
-      'topup': '4,035',
-      'dueamt': '10,300',
-      'rperson': 'prasad',
-      'contact': '9223351536',
-      'address': '1548 bmc, 6, malad w',
-      'PAN': 'test212234r',
-      'gstn': '27test21234r',
-    },
-  ];
   Animation<double>? _animation;
   AnimationController? _animationController;
+  late Stream<QuerySnapshot> _queryStream;
 
   @override
   void initState() {
+    _queryStream = FirebaseFirestore.instance.collection('planDetails').snapshots();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -87,64 +67,78 @@ class _AdminNetworkState extends State<AdminNetwork>
     commissionPrice.dispose();
     super.dispose();
   }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  get user => _auth.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionBubble(
-        items: <Bubble>[
-          Bubble(
-              icon: Icons.home,
-              iconColor: Colors.black,
-              title: 'DashBoard',
-              titleStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17),
-              bubbleColor: Color.fromRGBO(82, 98, 255, 1),
-              onPress: () {
-                _animationController!.reverse();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AdminHome()));
-              }),
-          Bubble(
-              icon: Icons.person,
-              iconColor: Colors.black,
-              title: 'Operator',
-              titleStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17),
-              bubbleColor: Color.fromRGBO(255, 171, 67, 1),
-              onPress: () {
-                _animationController!.reverse();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AdminOperator()));
-              }),
-          Bubble(
-              icon: Icons.add_circle_outlined,
-              iconColor: Colors.black,
-              title: 'New Network',
-              titleStyle: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17),
-              bubbleColor: Color.fromRGBO(255, 171, 67, 1),
-              onPress: () {
-                _animationController!.reverse();
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => _buildPopupDialog(context),
-                );
-              }),
-        ],
-        animation: _animation!,
-        onPress: () => _animationController!.isCompleted
-            ? _animationController!.reverse()
-            : _animationController!.forward(),
-        backGroundColor: Theme.of(context).primaryColor,
-        iconColor: Colors.white,
-        iconData: Icons.menu,
-      ),
+      floatingActionButton: FloatingActionButton.extended(
+        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFF496585),
+
+        icon: Icon(Icons.add,color: Colors.white,),
+        onPressed: (){
+          showDialog(
+                          context: context,
+                          builder: (BuildContext context) => _buildPopupDialog(context),
+                        );
+        }, label: Text('New Network',style: TextStyle(color: Colors.white),),),
+      bottomNavigationBar: AdminBottomDot(selectedIndex: 3),
+      // floatingActionButton: FloatingActionBubble(
+      //   items: <Bubble>[
+      //     Bubble(
+      //         icon: Icons.home,
+      //         iconColor: Colors.black,
+      //         title: 'DashBoard',
+      //         titleStyle: TextStyle(
+      //             color: Colors.white,
+      //             fontWeight: FontWeight.w500,
+      //             fontSize: 17),
+      //         bubbleColor: Color.fromRGBO(82, 98, 255, 1),
+      //         onPress: () {
+      //           _animationController!.reverse();
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => AdminHome()));
+      //         }),
+      //     Bubble(
+      //         icon: Icons.person,
+      //         iconColor: Colors.black,
+      //         title: 'Operator',
+      //         titleStyle: TextStyle(
+      //             color: Colors.white,
+      //             fontWeight: FontWeight.w500,
+      //             fontSize: 17),
+      //         bubbleColor: Color.fromRGBO(255, 171, 67, 1),
+      //         onPress: () {
+      //           _animationController!.reverse();
+      //           Navigator.push(context,
+      //               MaterialPageRoute(builder: (context) => AdminOperator()));
+      //         }),
+      //     Bubble(
+      //         icon: Icons.add_circle_outlined,
+      //         iconColor: Colors.black,
+      //         title: 'New Network',
+      //         titleStyle: TextStyle(
+      //             color: Colors.white,
+      //             fontWeight: FontWeight.w500,
+      //             fontSize: 17),
+      //         bubbleColor: Color.fromRGBO(255, 171, 67, 1),
+      //         onPress: () {
+      //           _animationController!.reverse();
+      //           showDialog(
+      //             context: context,
+      //             builder: (BuildContext context) => _buildPopupDialog(context),
+      //           );
+      //         }),
+      //   ],
+      //   animation: _animation!,
+      //   onPress: () => _animationController!.isCompleted
+      //       ? _animationController!.reverse()
+      //       : _animationController!.forward(),
+      //   backGroundColor: Theme.of(context).primaryColor,
+      //   iconColor: Colors.white,
+      //   iconData: Icons.menu,
+      // ),
       backgroundColor: Color.fromRGBO(193, 214, 223, 1),
       extendBody: true,
       // bottomNavigationBar: DotBotoomBar(),
@@ -155,10 +149,82 @@ class _AdminNetworkState extends State<AdminNetwork>
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            planDetailsWidget(context)
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _queryStream,
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.data!.docs.isEmpty) {
+                    return Text('No items found.');
+                  }
+
+                  return ListView(
+                    children: snapshot.data!.docs.map((doc) =>
+                        Card(
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),),
+                          color: Colors.blueGrey,
+                          child: Slidable(
+                            endActionPane: ActionPane(motion: const StretchMotion(), children: [
+                              SlidableAction(onPressed: (context){
+                                showDialog(context: context, builder: (BuildContext context) =>
+                                    editData(id:doc.id)
+                                );
+                              },
+                                label: 'Edit',
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                icon: Icons.edit,
+                              )
+                            ]),
+                            startActionPane: ActionPane(motion: const StretchMotion(), children: [
+                              SlidableAction(onPressed: (context) =>{
+                                deleteUser(doc.id)
+                              },
+                                label: 'Delete',
+                                backgroundColor: const Color(0xFFFE4A49),
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                              )
+                            ]),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(10),
+                              title: Text("${doc['planName']}"),
+                              subtitle: Text("Plan Speed: ${doc['planSpeed']} \nPlan Price: ${doc
+                              ['planPrice']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                              trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('Validity:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                  Text('${doc['duration']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                  Text('OP Price: ${doc['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                  // Text('${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+                                ],
+                              ),
+                              leading: const CircleAvatar(
+                                radius: 25,
+                                backgroundImage:
+                                // NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/WIFI_icon.svg/256px-WIFI_icon.svg.png'),
+                                AssetImage('assets/wifi.png'),
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                    ).toList(),
+                  );
+                },
+              ),
+            ),
           ],
         )
-
       ),
     );
   }
@@ -323,85 +389,85 @@ class _AdminNetworkState extends State<AdminNetwork>
         fontSize: 16.0);
   }
 
-  Widget planDetailsWidget(BuildContext context){
-    return StreamBuilder<QuerySnapshot>(stream: planDetails,
-        builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
-          if(snapshot.hasError){
-            print('object');
-          }if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator(),);
-          }
-
-          snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map a = document.data()as Map<String, dynamic>;
-            planList.add(a);
-            a['idop'] = document.id;
-          }).toList();
-          return
-            Expanded(
-              child: ListView.builder(
-                // physics: const AlwaysScrollableScrollPhysics(),
-                // controller: _controller,
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: planList.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return
-                      Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),),
-                      color: Colors.blueGrey,
-                      child: Slidable(
-                        endActionPane: ActionPane(motion: const StretchMotion(), children: [
-                          SlidableAction(onPressed: (context){
-                            showDialog(context: context, builder: (BuildContext context) =>
-                                editData(id:planList[index]['idop'])
-                            );
-                          },
-                            label: 'Edit',
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
-                            icon: Icons.edit,
-                          )
-                        ]),
-                        startActionPane: ActionPane(motion: const StretchMotion(), children: [
-                          SlidableAction(onPressed: (context) =>{
-                            // deleteUser(_filterList[index]['idop'])
-                          },
-                            label: 'Delete',
-                            backgroundColor: const Color(0xFFFE4A49),
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                          )
-                        ]),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(10),
-                          title: Text("${planList[index]['planName']}"),
-                          subtitle: Text("Plan Speed: ${planList[index]['planSpeed']} \nPlan Price: ${planList[index]['planPrice']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                          trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Validity:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                              Text('${planList[index]['duration']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                               Text('OP Price: ${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                              // Text('${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
-                            ],
-                          ),
-                          leading: const CircleAvatar(
-                            radius: 25,
-                            backgroundImage:
-                            // NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/WIFI_icon.svg/256px-WIFI_icon.svg.png'),
-                            AssetImage('assets/wifi.png'),
-                            backgroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-              ),
-            );
-        });
-  }
+  // Widget planDetailsWidget(BuildContext context){
+  //   return StreamBuilder<QuerySnapshot>(stream: planDetails,
+  //       builder:(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+  //         if(snapshot.hasError){
+  //           print('object');
+  //         }if(snapshot.connectionState == ConnectionState.waiting){
+  //           return Center(child: CircularProgressIndicator(),);
+  //         }
+  //
+  //         snapshot.data!.docs.map((DocumentSnapshot document) {
+  //           Map a = document.data()as Map<String, dynamic>;
+  //           planList.add(a);
+  //           a['idop'] = document.id;
+  //         }).toList();
+  //         return
+  //           Expanded(
+  //             child: ListView.builder(
+  //               // physics: const AlwaysScrollableScrollPhysics(),
+  //               // controller: _controller,
+  //                 scrollDirection: Axis.vertical,
+  //                 shrinkWrap: true,
+  //                 itemCount: planList.length,
+  //                 itemBuilder: (BuildContext context, int index){
+  //                   return
+  //                     Card(
+  //                     elevation: 10,
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(25),),
+  //                     color: Colors.blueGrey,
+  //                     child: Slidable(
+  //                       endActionPane: ActionPane(motion: const StretchMotion(), children: [
+  //                         SlidableAction(onPressed: (context){
+  //                           showDialog(context: context, builder: (BuildContext context) =>
+  //                               editData(id:planList[index]['idop'])
+  //                           );
+  //                         },
+  //                           label: 'Edit',
+  //                           backgroundColor: Colors.blue,
+  //                           foregroundColor: Colors.white,
+  //                           icon: Icons.edit,
+  //                         )
+  //                       ]),
+  //                       startActionPane: ActionPane(motion: const StretchMotion(), children: [
+  //                         SlidableAction(onPressed: (context) =>{
+  //                           deleteUser(planList[index]['idop'])
+  //                         },
+  //                           label: 'Delete',
+  //                           backgroundColor: const Color(0xFFFE4A49),
+  //                           foregroundColor: Colors.white,
+  //                           icon: Icons.delete,
+  //                         )
+  //                       ]),
+  //                       child: ListTile(
+  //                         contentPadding: const EdgeInsets.all(10),
+  //                         title: Text("${planList[index]['planName']}"),
+  //                         subtitle: Text("Plan Speed: ${planList[index]['planSpeed']} \nPlan Price: ${planList[index]['planPrice']}",style: const TextStyle(letterSpacing: 1,height: 1.2),),
+  //                         trailing: Column(crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             const Text('Validity:',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+  //                             Text('${planList[index]['duration']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+  //                              Text('OP Price: ${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+  //                             // Text('${planList[index]['commissionPrice']}',style: const TextStyle(letterSpacing: 1,height: 1.2),),
+  //                           ],
+  //                         ),
+  //                         leading: const CircleAvatar(
+  //                           radius: 25,
+  //                           backgroundImage:
+  //                           // NetworkImage('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/WIFI_icon.svg/256px-WIFI_icon.svg.png'),
+  //                           AssetImage('assets/wifi.png'),
+  //                           backgroundColor: Colors.white,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   );
+  //                 }
+  //             ),
+  //           );
+  //       });
+  // }
 
   Widget editData({required String id}){
     return FutureBuilder<DocumentSnapshot<Map <String,dynamic>>>(
@@ -623,151 +689,17 @@ class _AdminNetworkState extends State<AdminNetwork>
         .catchError((e) => debugPrint(e));
   }
 
-  Future<void> createPlan() {
-    return planCollection.add({
+ void createPlan() {
+    Map<String, dynamic> data ={
+      'id' : "1",
+      'duration': '30 Days',
       'planName': planName.text,
       'planPrice': planPrice.text,
-      'planSpeed': dropdownvalue,
-      'commissionPrice': commissionPrice.text
-    });
+      'planSpeed': dropdownvalue.toString(),
+      'commissionPrice': commissionPrice.text,
+    };
+    planCollection.add(data).then((value) => debugPrint("Data Added Successfully${value.id}"))
+        .catchError((e) => debugPrint("error: $e"));
   }
 
-  DataTable networkTable() {
-    return DataTable(
-      border: TableBorder.all(),
-      columns: _networkColumn(),
-      rows: _networkRow(),
-      dividerThickness: 5,
-      dataRowHeight: 80,
-      showBottomBorder: true,
-      headingTextStyle:
-          const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-      headingRowColor:
-          MaterialStateProperty.resolveWith((states) => Colors.black),
-    );
-  }
-
-  List<DataColumn> _networkColumn() {
-    return [
-      const DataColumn(
-          label: Text(
-        "Action",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Network Name",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Users",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Topup",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Due amt.",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Respnsible Person",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Contact",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "Address",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "PAN",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-      const DataColumn(
-          label: Text(
-        "GSTIN",
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      )),
-    ];
-  }
-
-  List<DataRow> _networkRow() {
-    return _network
-        .map((network) =>
-        DataRow(cells: [
-              DataCell(Row(
-                children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.menu, color: Colors.deepOrange)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.receipt_long,
-                          color: Colors.blueAccent))
-                ],
-              )),
-              DataCell(Text(network['networkname'])),
-              DataCell(Text(network['users'])),
-              DataCell(Text(network['topup'])),
-              DataCell(Text(network['dueamt'])),
-              DataCell(Text(network['rperson'])),
-              DataCell(Text(network['contact'])),
-              DataCell(Text(network['address'])),
-              DataCell(Text(network['PAN'])),
-              DataCell(Text(network['gstn'])),
-            ]),
-    )
-        .toList();
-  }
 }

@@ -62,10 +62,9 @@ class Category {
 final kCategories = [
   Category('Total Operator', amount: 250.00),
   Category('Active Operator', amount: 150.00),
-  Category('Deactivated Operator', amount: 90.00),
   Category('Pending Operator', amount: 90.00),
-  // Category('Yesterday Exp. Users', amount: 40.00),
   Category('Approved Operator', amount: 20.00),
+  Category('Deactivated Operator', amount: 10.00),
 ];
 
 final kNeumorphicColors = [
@@ -73,6 +72,5 @@ final kNeumorphicColors = [
   Color.fromRGBO(46, 198, 255, 1), // rgb(46, 198, 255)
   Color.fromRGBO(123, 201, 82, 1), // rgb(123, 201, 82)
   Color.fromRGBO(255, 171, 67, 1), // rgb(255, 171, 67)
-  // Color.fromRGBO(252, 91, 57, 1), //  rgb(252, 91, 57)
   Color.fromRGBO(139, 135, 130, 1), //rgb(139, 135, 130)
 ];

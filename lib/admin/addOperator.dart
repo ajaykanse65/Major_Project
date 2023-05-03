@@ -8,6 +8,7 @@ import 'package:bms/admin/adminNetwrok.dart';
 import 'package:bms/admin/adminOperator.dart';
 import 'package:bms/admin/adminWidget/adminDrawer.dart';
 import 'package:bms/authentication.dart';
+import 'package:bms/customWidget/customSnackBarContent.dart';
 import 'package:bms/widget/custom_search_widget.dart';
 import 'package:bms/widget/file_picker_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +19,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddOperator extends StatefulWidget {
   const AddOperator({Key? key}) : super(key: key);
@@ -240,7 +242,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                             return 'Please fill this field';
                                           }
                                           if(value1.length < 6){
-                                            return "Password must be atleast 6 characters long";
+                                            return "Password must be at least 6 characters long";
                                           }
                                           if(value1.length > 20){
                                             return "Password must be less than 20 characters";
@@ -909,7 +911,7 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                                       height: 10,
                                     ),
                                     SizedBox(
-                                      height: 60,
+                                      height: 40,
                                       child: TextFormField(
                                         controller: gstncontroller,
                                         decoration: const InputDecoration(
@@ -1082,9 +1084,9 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IconButton(onPressed: () async {
+                      ElevatedButton(onPressed: () async {
                         if (_form.currentState!.validate()) {
                           _form.currentState!.save();
                           // use the information provided
@@ -1092,8 +1094,10 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                           AuthenticationHelper().signUp(email: useridcontroller.text, password: passwordcontroller.text, role: dropdownvalue);
                           await Future.delayed(const Duration(milliseconds: 2000));
                           signUP();
+                          Fluttertoast.showToast(msg: 'Operator created successfully...🤩');
                           // test();
-                        }else {
+                        }
+                        else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               backgroundColor: Colors.white,
@@ -1106,10 +1110,31 @@ class _AddOperatorState extends State<AddOperator> with SingleTickerProviderStat
                             ),
                           );
                         }
-                      }, icon: Icon(Icons.done)),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.done)),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.done)),
-
+                      },
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Colors.green; //<-- SEE HERE
+                              return null; // Defer to the widget's default.
+                            },
+                          ),
+                        ),
+                        child: Text('Submit',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),),
+                      ElevatedButton(onPressed: (){
+                        Navigator.of(context);
+                      },
+                          style: ButtonStyle(
+                            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Colors.red; //<-- SEE HERE
+                                return null; // Defer to the widget's default.
+                              },
+                            ),
+                          ),
+                          child: Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)),
+                      
                     ],
                   )
                 ],
@@ -1128,7 +1153,10 @@ final file = File(pickedFile!.path!);
 
 var ref = FirebaseStorage.instance.ref().child(path);
 uploadTask = ref.putFile(file);
-final snapshot = await uploadTask!.whenComplete(() {});
+final snapshot = await uploadTask!.whenComplete(() {
+  Fluttertoast.showToast(msg: 'File uploaded successfully...');
+});
+
 
 final downloadurl = await snapshot.ref.getDownloadURL();
 setState(() {
@@ -1193,7 +1221,9 @@ setState(() {
      'aadharadd': aadharaddcontroller.text,
      'documenttype': document,
      'documenturl': downlaodTask,
-     'status': "Pending"
+     'docname' : pickedFile!.name,
+     'status': "Pending",
+     'bal' :'0'
    });
   }
 

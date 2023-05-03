@@ -6,6 +6,7 @@ import 'package:bms/authentication.dart';
 import 'package:bms/main.dart';
 import 'package:bms/operator/operatorHome.dart';
 import 'package:bms/page/home.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:bms/service/usermanagement.dart';
 import 'package:flutter/material.dart';
@@ -59,18 +60,23 @@ class _LoginPageState extends State<LoginPage2> {
     super.initState();
     userFocusNode.addListener(emailFocus);
     passwordFocusNode.addListener(passwordFocus);
-    FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        FCMtoken = token;
-      });
-      // savetoken(token!);
-    });
+    // FirebaseMessaging.instance.getToken().then((token) {
+    //   setState(() {
+    //     FCMtoken = token;
+    //   });
+    //   // savetoken(token!);
+    // });
   }
+
 
   @override
   void dispose() {
     userFocusNode.removeListener(emailFocus);
     passwordFocusNode.removeListener(passwordFocus);
+    nameController.dispose();
+    locationController.dispose();
+    contactController.dispose();
+    idEmailController.dispose();
     super.dispose();
   }
 
@@ -232,7 +238,7 @@ class _LoginPageState extends State<LoginPage2> {
                                 userFocusNode.unfocus();
                                 passwordFocusNode.unfocus();
                                 final bool? isValid = _formkey.currentState?.validate();
-                                if(isValid == true){
+
                                   showLoadingDialog(context);
 
                                   await Future.delayed(const Duration(milliseconds:2000 ));
@@ -240,7 +246,7 @@ class _LoginPageState extends State<LoginPage2> {
                                   if(mounted) Navigator.pop(context);
                                   AuthenticationHelper().signIn(email: userController.text, password: passwordController.text, context: context);
 
-                                }
+
                                 // await Future.delayed(const Duration(milliseconds:3500 ));
                                 // UserManagemnt().authorizeAccess(context);
                                 // signInUser(context);
@@ -297,6 +303,10 @@ class _LoginPageState extends State<LoginPage2> {
              child: InkResponse(
                onTap: () {
                  Navigator.of(context).pop();
+                 nameController.clear();
+                 contactController.clear();
+                 locationController.clear();
+                 idEmailController.clear();
                },
                child: const CircleAvatar(
                  backgroundColor: Color(0xFF11253d),
@@ -431,6 +441,7 @@ class _LoginPageState extends State<LoginPage2> {
                          // showNotification();
                          sendEmail();
                          send();
+                         sendUserEmail();
                        }
                        Navigator.pop(context);
                      },
@@ -467,7 +478,28 @@ class _LoginPageState extends State<LoginPage2> {
           }
         })
     );print(res.statusCode);
-
+    Fluttertoast.showToast(msg: 'Response submitted successfully...!');
+    return res.statusCode;
+  }
+  Future sendUserEmail() async{
+    final uri = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+    const serviceId = "service_hi9ygcc";
+    const templateId = "template_y7uau0r";
+    const userId = "_tWWKkHCqnW_moGJy";
+    final res = await http.post(uri,
+        headers: {'Content-Type': 'application/json','origin': 'http://localhost'},
+        body: json.encode({
+          "service_id": serviceId,
+          "template_id" : templateId,
+          "user_id" : userId,
+          "template_params" : {
+            "to_name": nameController.text,
+            "subject" : "Thank you for your application to BMS",
+            "message": "Congratulations! Your application for the role of Operator has been successfully received by BMS",
+            "user_email" : idEmailController.text
+          }
+        })
+    );print(res.statusCode);
     return res.statusCode;
   }
 
@@ -475,7 +507,10 @@ class _LoginPageState extends State<LoginPage2> {
     return opResponse.add({
       'fname' : nameController.text,
       'areaname' : locationController.text,
-      'contactno' : contactController.text
+      'contactno' : contactController.text,
+      'email' : idEmailController.text,
+      'status' : 'Pending',
+      'desc' : " ",
     });
   }
 

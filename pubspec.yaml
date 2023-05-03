@@ -62,6 +62,13 @@ dependencies:
   firebase_storage: any
   flutter_slidable: any
   razorpay_flutter: any
+  transparent_image: any
+  provider: any
+  math_expressions: any
+  animated_emoji: any
+  fl_chart: any
+  pie_chart: any
+  flutter_phone_direct_caller: any
 
 
   flutter:

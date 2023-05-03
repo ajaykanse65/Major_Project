@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 class AddUser extends StatefulWidget {
   const AddUser({Key? key}) : super(key: key);
@@ -80,6 +82,8 @@ class _AddUserState extends State<AddUser> {
   var planId="";
   var planPrice, planSpeed, commissionPrice, duration, planName;
   String? userId;
+  DateTime now = DateTime.now();
+  var chcecktoday;
 
   @override
   Widget build(BuildContext context) {
@@ -1161,34 +1165,54 @@ class _AddUserState extends State<AddUser> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    IconButton(
-                        onPressed: () async {
-                          if (_form.currentState!.validate()) {
-                            _form.currentState!.save();
-                            getUid();
-                            addUser();
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: Colors.white,
-                                content: Text(
-                                  'Please fill the empty field...',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
+                    ElevatedButton(onPressed: () async {
+                      if (_form.currentState!.validate()) {
+                        _form.currentState!.save();
+                        getUid();
+                        addUser();
+                        Fluttertoast.showToast(msg: 'User created successfully...🤩');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Colors.white,
+                            content: Text(
+                              'Please fill the empty field...',
+                              style: TextStyle(
+                                color: Colors.black,
                               ),
-                            );
-                          }
-                        },
-                        icon: const Icon(Icons.done)),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.done)),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.done)),
-                  ],
-                ),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed))
+                              return Colors.green; //<-- SEE HERE
+                            return null; // Defer to the widget's default.
+                          },
+                        ),
+                      ),
+                      child: Text('Submit',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),),
+                    ElevatedButton(onPressed: (){
+                      Navigator.pop(context);
+                    },
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.pressed))
+                                return Colors.red; //<-- SEE HERE
+                              return null; // Defer to the widget's default.
+                            },
+                          ),
+                        ),
+                        child: Text('Cancel',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)),
 
+                  ],
+                )
               ],
             ),
           ),
@@ -1226,7 +1250,11 @@ class _AddUserState extends State<AddUser> {
       "panNo" : pancontroller.text,
       "aadharNo": aadharaddcontroller.text,
       "documentURL": downlaodTask.toString(),
-      "status": "Pending"
+      "status": "Pending",
+      'docname' : pickedFile!.name,
+      'bal': '0',
+      'sdate' : chcecktoday = DateFormat.yMd().format(now),
+      'duedate' : chcecktoday = DateFormat.yMd().format(now)
     };
     subCollectionRef.doc().set(data)
     .then((value) => debugPrint("Data Added Successfully"))
@@ -1296,7 +1324,9 @@ class _AddUserState extends State<AddUser> {
 
     var ref = FirebaseStorage.instance.ref().child(path);
     uploadTask = ref.putFile(file);
-    final snapshot = await uploadTask!.whenComplete(() {});
+    final snapshot = await uploadTask!.whenComplete(() {
+      Fluttertoast.showToast(msg: 'File uploaded successfully...');
+    });
 
     final downloadurl = await snapshot.ref.getDownloadURL();
     setState(() {

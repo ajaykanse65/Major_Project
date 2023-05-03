@@ -54,11 +54,12 @@ class UserManagemnt{
               Navigator.push(context, MaterialPageRoute(builder: (context)=> const AdminHome()));
             }else{
               ScaffoldMessenger.of(context).showSnackBar( const SnackBar(
-                content: CustomSnackBarContent(errorText: 'Sorry...! Your Id is not Approved yet',),
+                content: CustomSnackBarContent(errorText: 'Sorry...! Your Id is not Approved yet😟',),
                 behavior: SnackBarBehavior.floating,
                 elevation: 0,
                 backgroundColor: Colors.transparent,
               ));
+              signOut();
           }
           }
     });

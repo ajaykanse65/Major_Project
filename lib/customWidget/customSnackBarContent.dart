@@ -100,7 +100,7 @@ class CustomSuccessContent extends StatelessWidget {
                     style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.bold,),
                   ),
                   Text(
-                    'You have login Successfully...',
+                    'You have login Successfully...🤩',
                     style:
                     const TextStyle(fontSize: 14, color: Colors.white,),
                     maxLines: 4,

@@ -45,21 +45,21 @@ class AuthenticationHelper {
     } on FirebaseAuthException catch (e) {
       if(e.code == 'invalid-email'){
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: CustomSnackBarContent(errorText: 'You have entered an invalid username or password',),
+          content: CustomSnackBarContent(errorText: 'You have entered an invalid username or password...😑',),
           behavior: SnackBarBehavior.floating,
           elevation: 0,
           backgroundColor: Colors.transparent,
         ));
       }else if(e.code == 'wrong-password'){
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: CustomSnackBarContent(errorText: 'You have entered an invalid username or password',),
+          content: CustomSnackBarContent(errorText: 'You have entered an invalid username or password...😑',),
           behavior: SnackBarBehavior.floating,
           elevation: 0,
           backgroundColor: Colors.transparent,
         ));
       }else if(e.code == 'unknown'){
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: CustomSnackBarContent(errorText: 'Please enter the username and password or This field can not be empty',),
+          content: CustomSnackBarContent(errorText: 'Please enter the username and password or This field can not be empty...👀',),
           behavior: SnackBarBehavior.floating,
           elevation: 0,
           backgroundColor: Colors.transparent,

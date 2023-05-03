@@ -11,7 +11,7 @@ class PieChartView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 4,
+      flex: 3,
       child: LayoutBuilder(
         builder: (context, constraint) => Container(
           decoration: BoxDecoration(
